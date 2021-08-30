@@ -38,6 +38,7 @@ require (
 	github.com/olekukonko/tablewriter v0.0.4
 	github.com/onsi/ginkgo v1.7.0 // indirect
 	github.com/onsi/gomega v1.5.0 // indirect
+	github.com/opentracing/opentracing-go v1.2.0
 	github.com/pierrec/lz4 v2.5.1+incompatible // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/prometheus/client_golang v1.5.1
@@ -45,6 +46,8 @@ require (
 	github.com/spaolacci/murmur3 v1.1.0
 	github.com/stretchr/testify v1.5.1
 	github.com/tmc/grpc-websocket-proxy v0.0.0-20171017195756-830351dc03c6 // indirect
+	github.com/uber/jaeger-client-go v2.29.1+incompatible
+	github.com/uber/jaeger-lib v2.4.1+incompatible // indirect
 	github.com/urfave/cli v1.22.5
 	github.com/xwb1989/sqlparser v0.0.0-20180606152119-120387863bf2
 	github.com/yuin/gopher-lua v0.0.0-20191220021717-ab39c6098bdb // indirect

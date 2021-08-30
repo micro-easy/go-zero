@@ -6,6 +6,7 @@ import (
 	"github.com/micro-easy/go-zero/core/proc"
 	"github.com/micro-easy/go-zero/core/stat"
 	"github.com/micro-easy/go-zero/zrpc/internal/serverinterceptors"
+	"github.com/opentracing/opentracing-go"
 	"google.golang.org/grpc"
 )
 
@@ -52,7 +53,7 @@ func (s *rpcServer) Start(register RegisterFn) error {
 	}
 
 	unaryInterceptors := []grpc.UnaryServerInterceptor{
-		serverinterceptors.UnaryTracingInterceptor(s.name),
+		serverinterceptors.UnaryOpenTracingInterceptor(),
 		serverinterceptors.UnaryCrashInterceptor(),
 		serverinterceptors.UnaryStatInterceptor(s.metrics),
 		serverinterceptors.UnaryPrometheusInterceptor(),
@@ -79,5 +80,11 @@ func (s *rpcServer) Start(register RegisterFn) error {
 func WithMetrics(metrics *stat.Metrics) ServerOption {
 	return func(options *rpcServerOptions) {
 		options.metrics = metrics
+	}
+}
+
+func WithOpenTracingTracer(tracer opentracing.Tracer) ServerOption {
+	return func(options *rpcServerOptions) {
+		options.tracer = tracer
 	}
 }
