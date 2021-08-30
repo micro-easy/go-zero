@@ -7,9 +7,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/tal-tech/go-zero/core/conf"
-	"github.com/tal-tech/go-zero/example/graceful/etcd/rpc/graceful"
-	"github.com/tal-tech/go-zero/zrpc"
+	"github.com/micro-easy/go-zero/core/conf"
+	"github.com/micro-easy/go-zero/example/graceful/etcd/rpc/graceful"
+	"github.com/micro-easy/go-zero/zrpc"
 	"google.golang.org/grpc"
 )
 

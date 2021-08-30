@@ -18,8 +18,8 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/tal-tech/go-zero/core/codec"
-	"github.com/tal-tech/go-zero/rest/httpx"
+	"github.com/micro-easy/go-zero/core/codec"
+	"github.com/micro-easy/go-zero/rest/httpx"
 )
 
 const timeDiff = time.Hour * 2 * 24

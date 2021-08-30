@@ -1,8 +1,8 @@
 package discov
 
 import (
-	"github.com/tal-tech/go-zero/core/discov/internal"
-	"github.com/tal-tech/go-zero/core/logx"
+	"github.com/micro-easy/go-zero/core/discov/internal"
+	"github.com/micro-easy/go-zero/core/logx"
 )
 
 type (

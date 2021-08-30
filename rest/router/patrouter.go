@@ -6,9 +6,9 @@ import (
 	"path"
 	"strings"
 
-	"github.com/tal-tech/go-zero/core/search"
-	"github.com/tal-tech/go-zero/rest/httpx"
-	"github.com/tal-tech/go-zero/rest/internal/context"
+	"github.com/micro-easy/go-zero/core/search"
+	"github.com/micro-easy/go-zero/rest/httpx"
+	"github.com/micro-easy/go-zero/rest/internal/context"
 )
 
 const (

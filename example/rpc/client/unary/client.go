@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/tal-tech/go-zero/core/conf"
-	"github.com/tal-tech/go-zero/example/rpc/remote/unary"
-	"github.com/tal-tech/go-zero/zrpc"
+	"github.com/micro-easy/go-zero/core/conf"
+	"github.com/micro-easy/go-zero/example/rpc/remote/unary"
+	"github.com/micro-easy/go-zero/zrpc"
 )
 
 var configFile = flag.String("f", "config.json", "the config file")

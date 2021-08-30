@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"github.com/tal-tech/go-zero/tools/goctl/rpc/parser"
-	"github.com/tal-tech/go-zero/tools/goctl/util"
+	"github.com/micro-easy/go-zero/tools/goctl/rpc/parser"
+	"github.com/micro-easy/go-zero/tools/goctl/util"
 )
 
 const svcTemplate = `package svc

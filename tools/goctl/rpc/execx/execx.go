@@ -8,8 +8,8 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/tal-tech/go-zero/tools/goctl/util"
-	"github.com/tal-tech/go-zero/tools/goctl/vars"
+	"github.com/micro-easy/go-zero/tools/goctl/util"
+	"github.com/micro-easy/go-zero/tools/goctl/vars"
 )
 
 func Run(arg string, dir string) (string, error) {

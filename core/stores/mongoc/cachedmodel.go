@@ -4,9 +4,9 @@ import (
 	"log"
 
 	"github.com/globalsign/mgo"
-	"github.com/tal-tech/go-zero/core/stores/cache"
-	"github.com/tal-tech/go-zero/core/stores/mongo"
-	"github.com/tal-tech/go-zero/core/stores/redis"
+	"github.com/micro-easy/go-zero/core/stores/cache"
+	"github.com/micro-easy/go-zero/core/stores/mongo"
+	"github.com/micro-easy/go-zero/core/stores/redis"
 )
 
 type Model struct {

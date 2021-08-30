@@ -11,10 +11,10 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/tal-tech/go-zero/core/collection"
-	"github.com/tal-tech/go-zero/core/executors"
-	"github.com/tal-tech/go-zero/core/logx"
-	"github.com/tal-tech/go-zero/core/syncx"
+	"github.com/micro-easy/go-zero/core/collection"
+	"github.com/micro-easy/go-zero/core/executors"
+	"github.com/micro-easy/go-zero/core/logx"
+	"github.com/micro-easy/go-zero/core/syncx"
 	"gopkg.in/cheggaaa/pb.v1"
 )
 

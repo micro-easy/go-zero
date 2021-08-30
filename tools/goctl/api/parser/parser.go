@@ -10,8 +10,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/tal-tech/go-zero/tools/goctl/api/spec"
-	"github.com/tal-tech/go-zero/tools/goctl/util"
+	"github.com/micro-easy/go-zero/tools/goctl/api/spec"
+	"github.com/micro-easy/go-zero/tools/goctl/util"
 )
 
 type Parser struct {

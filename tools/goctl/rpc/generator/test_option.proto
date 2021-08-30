@@ -3,7 +3,7 @@ syntax = "proto3";
 
 package stream;
 
-option go_package="github.com/tal-tech/go-zero";
+option go_package="github.com/micro-easy/go-zero";
 
 message StreamReq {
   string name = 1;

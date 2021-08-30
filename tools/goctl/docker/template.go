@@ -1,7 +1,7 @@
 package docker
 
 import (
-	"github.com/tal-tech/go-zero/tools/goctl/util"
+	"github.com/micro-easy/go-zero/tools/goctl/util"
 	"github.com/urfave/cli"
 )
 

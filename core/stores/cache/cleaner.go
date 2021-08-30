@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/tal-tech/go-zero/core/collection"
-	"github.com/tal-tech/go-zero/core/logx"
-	"github.com/tal-tech/go-zero/core/proc"
-	"github.com/tal-tech/go-zero/core/stat"
-	"github.com/tal-tech/go-zero/core/stringx"
-	"github.com/tal-tech/go-zero/core/threading"
+	"github.com/micro-easy/go-zero/core/collection"
+	"github.com/micro-easy/go-zero/core/logx"
+	"github.com/micro-easy/go-zero/core/proc"
+	"github.com/micro-easy/go-zero/core/stat"
+	"github.com/micro-easy/go-zero/core/stringx"
+	"github.com/micro-easy/go-zero/core/threading"
 )
 
 const (

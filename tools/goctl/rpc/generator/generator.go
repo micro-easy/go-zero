@@ -1,6 +1,6 @@
 package generator
 
-import "github.com/tal-tech/go-zero/tools/goctl/rpc/parser"
+import "github.com/micro-easy/go-zero/tools/goctl/rpc/parser"
 
 type Generator interface {
 	Prepare() error

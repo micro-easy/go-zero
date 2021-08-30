@@ -1,6 +1,6 @@
 package rescue
 
-import "github.com/tal-tech/go-zero/core/logx"
+import "github.com/micro-easy/go-zero/core/logx"
 
 func Recover(cleanups ...func()) {
 	for _, cleanup := range cleanups {

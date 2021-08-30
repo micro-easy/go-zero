@@ -3,7 +3,7 @@ package util
 import (
 	"strings"
 
-	"github.com/tal-tech/go-zero/tools/goctl/api/spec"
+	"github.com/micro-easy/go-zero/tools/goctl/api/spec"
 )
 
 func GetAnnotationValue(annos []spec.Annotation, key, field string) (string, bool) {

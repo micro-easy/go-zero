@@ -6,10 +6,10 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/tal-tech/go-zero/tools/goctl/api/spec"
-	"github.com/tal-tech/go-zero/tools/goctl/api/util"
-	ctlutil "github.com/tal-tech/go-zero/tools/goctl/util"
-	"github.com/tal-tech/go-zero/tools/goctl/vars"
+	"github.com/micro-easy/go-zero/tools/goctl/api/spec"
+	"github.com/micro-easy/go-zero/tools/goctl/api/util"
+	ctlutil "github.com/micro-easy/go-zero/tools/goctl/util"
+	"github.com/micro-easy/go-zero/tools/goctl/vars"
 )
 
 const (

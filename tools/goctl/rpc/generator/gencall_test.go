@@ -6,9 +6,9 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/tal-tech/go-zero/tools/goctl/rpc/parser"
-	"github.com/tal-tech/go-zero/tools/goctl/util"
-	"github.com/tal-tech/go-zero/tools/goctl/util/ctx"
+	"github.com/micro-easy/go-zero/tools/goctl/rpc/parser"
+	"github.com/micro-easy/go-zero/tools/goctl/util"
+	"github.com/micro-easy/go-zero/tools/goctl/util/ctx"
 )
 
 func TestGenerateCall(t *testing.T) {

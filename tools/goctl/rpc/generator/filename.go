@@ -3,7 +3,7 @@ package generator
 import (
 	"strings"
 
-	"github.com/tal-tech/go-zero/tools/goctl/util/stringx"
+	"github.com/micro-easy/go-zero/tools/goctl/util/stringx"
 )
 
 func formatFilename(filename string) string {

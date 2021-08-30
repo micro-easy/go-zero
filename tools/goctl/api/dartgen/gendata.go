@@ -4,8 +4,8 @@ import (
 	"os"
 	"text/template"
 
-	"github.com/tal-tech/go-zero/core/logx"
-	"github.com/tal-tech/go-zero/tools/goctl/api/spec"
+	"github.com/micro-easy/go-zero/core/logx"
+	"github.com/micro-easy/go-zero/tools/goctl/api/spec"
 )
 
 const dataTemplate = `// --{{with .Info}}{{.Title}}{{end}}--

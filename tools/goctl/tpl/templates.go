@@ -4,12 +4,12 @@ import (
 	"fmt"
 
 	"github.com/logrusorgru/aurora"
-	"github.com/tal-tech/go-zero/core/errorx"
-	"github.com/tal-tech/go-zero/tools/goctl/api/gogen"
-	"github.com/tal-tech/go-zero/tools/goctl/docker"
-	modelgen "github.com/tal-tech/go-zero/tools/goctl/model/sql/gen"
-	rpcgen "github.com/tal-tech/go-zero/tools/goctl/rpc/generator"
-	"github.com/tal-tech/go-zero/tools/goctl/util"
+	"github.com/micro-easy/go-zero/core/errorx"
+	"github.com/micro-easy/go-zero/tools/goctl/api/gogen"
+	"github.com/micro-easy/go-zero/tools/goctl/docker"
+	modelgen "github.com/micro-easy/go-zero/tools/goctl/model/sql/gen"
+	rpcgen "github.com/micro-easy/go-zero/tools/goctl/rpc/generator"
+	"github.com/micro-easy/go-zero/tools/goctl/util"
 	"github.com/urfave/cli"
 )
 

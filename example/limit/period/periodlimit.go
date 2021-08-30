@@ -10,8 +10,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/tal-tech/go-zero/core/limit"
-	"github.com/tal-tech/go-zero/core/stores/redis"
+	"github.com/micro-easy/go-zero/core/limit"
+	"github.com/micro-easy/go-zero/core/stores/redis"
 )
 
 const seconds = 5

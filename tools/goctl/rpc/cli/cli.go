@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"github.com/tal-tech/go-zero/tools/goctl/rpc/execx"
-	"github.com/tal-tech/go-zero/tools/goctl/rpc/generator"
+	"github.com/micro-easy/go-zero/tools/goctl/rpc/execx"
+	"github.com/micro-easy/go-zero/tools/goctl/rpc/generator"
 	"github.com/urfave/cli"
 )
 

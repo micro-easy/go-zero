@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/tal-tech/go-zero/core/conf"
-	"github.com/tal-tech/go-zero/example/rpc/remote/stream"
-	"github.com/tal-tech/go-zero/zrpc"
+	"github.com/micro-easy/go-zero/core/conf"
+	"github.com/micro-easy/go-zero/example/rpc/remote/stream"
+	"github.com/micro-easy/go-zero/zrpc"
 	"google.golang.org/grpc"
 )
 

@@ -3,8 +3,8 @@ package gen
 import (
 	"fmt"
 
-	"github.com/tal-tech/go-zero/tools/goctl/model/sql/template"
-	"github.com/tal-tech/go-zero/tools/goctl/util"
+	"github.com/micro-easy/go-zero/tools/goctl/model/sql/template"
+	"github.com/micro-easy/go-zero/tools/goctl/util"
 	"github.com/urfave/cli"
 )
 

@@ -1,7 +1,7 @@
 package kv
 
 import (
-	"github.com/tal-tech/go-zero/core/stores/cache"
+	"github.com/micro-easy/go-zero/core/stores/cache"
 )
 
 type KvConf = cache.ClusterConf

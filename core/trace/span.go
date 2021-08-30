@@ -7,9 +7,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/tal-tech/go-zero/core/stringx"
-	"github.com/tal-tech/go-zero/core/timex"
-	"github.com/tal-tech/go-zero/core/trace/tracespec"
+	"github.com/micro-easy/go-zero/core/stringx"
+	"github.com/micro-easy/go-zero/core/timex"
+	"github.com/micro-easy/go-zero/core/trace/tracespec"
 )
 
 const (

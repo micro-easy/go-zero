@@ -3,8 +3,8 @@ package parser
 import (
 	"fmt"
 
-	"github.com/tal-tech/go-zero/tools/goctl/model/sql/converter"
-	"github.com/tal-tech/go-zero/tools/goctl/util/stringx"
+	"github.com/micro-easy/go-zero/tools/goctl/model/sql/converter"
+	"github.com/micro-easy/go-zero/tools/goctl/util/stringx"
 	"github.com/xwb1989/sqlparser"
 )
 

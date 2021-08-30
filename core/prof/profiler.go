@@ -1,6 +1,6 @@
 package prof
 
-import "github.com/tal-tech/go-zero/core/utils"
+import "github.com/micro-easy/go-zero/core/utils"
 
 type (
 	ProfilePoint struct {

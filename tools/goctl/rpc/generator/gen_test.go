@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/tal-tech/go-zero/tools/goctl/rpc/execx"
+	"github.com/micro-easy/go-zero/tools/goctl/rpc/execx"
 )
 
 func TestRpcGenerateCaseNilImport(t *testing.T) {

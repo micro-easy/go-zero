@@ -4,8 +4,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/tal-tech/go-zero/core/mr"
-	"github.com/tal-tech/go-zero/core/timex"
+	"github.com/micro-easy/go-zero/core/mr"
+	"github.com/micro-easy/go-zero/core/timex"
 )
 
 type user struct{}

@@ -1,4 +1,4 @@
-module github.com/tal-tech/go-zero
+module github.com/micro-easy/go-zero
 
 go 1.13
 

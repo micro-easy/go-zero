@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/tal-tech/go-zero/core/discov/internal"
+	"github.com/micro-easy/go-zero/core/discov/internal"
 )
 
 var mockLock sync.Mutex

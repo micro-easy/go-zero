@@ -6,13 +6,13 @@ import (
 	"strings"
 	"time"
 
-	"github.com/tal-tech/go-zero/core/load"
-	"github.com/tal-tech/go-zero/core/logx"
-	"github.com/tal-tech/go-zero/core/netx"
-	"github.com/tal-tech/go-zero/core/stat"
-	"github.com/tal-tech/go-zero/zrpc/internal"
-	"github.com/tal-tech/go-zero/zrpc/internal/auth"
-	"github.com/tal-tech/go-zero/zrpc/internal/serverinterceptors"
+	"github.com/micro-easy/go-zero/core/load"
+	"github.com/micro-easy/go-zero/core/logx"
+	"github.com/micro-easy/go-zero/core/netx"
+	"github.com/micro-easy/go-zero/core/stat"
+	"github.com/micro-easy/go-zero/zrpc/internal"
+	"github.com/micro-easy/go-zero/zrpc/internal/auth"
+	"github.com/micro-easy/go-zero/zrpc/internal/serverinterceptors"
 	"google.golang.org/grpc"
 )
 

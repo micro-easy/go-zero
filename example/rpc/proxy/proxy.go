@@ -4,10 +4,10 @@ import (
 	"context"
 	"flag"
 
-	"github.com/tal-tech/go-zero/core/logx"
-	"github.com/tal-tech/go-zero/core/service"
-	"github.com/tal-tech/go-zero/example/rpc/remote/unary"
-	"github.com/tal-tech/go-zero/zrpc"
+	"github.com/micro-easy/go-zero/core/logx"
+	"github.com/micro-easy/go-zero/core/service"
+	"github.com/micro-easy/go-zero/example/rpc/remote/unary"
+	"github.com/micro-easy/go-zero/zrpc"
 	"google.golang.org/grpc"
 )
 
