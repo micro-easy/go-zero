@@ -17,36 +17,38 @@ const serverSlowThreshold = time.Millisecond * 500
 func UnaryStatInterceptor(metrics *stat.Metrics) grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo,
 		handler grpc.UnaryHandler) (resp interface{}, err error) {
-		defer handleCrash(func(r interface{}) {
-			err = toPanicError(r)
-		})
 
+		var reply interface{}
 		startTime := timex.Now()
 		defer func() {
 			duration := timex.Since(startTime)
 			metrics.Add(stat.Task{
 				Duration: duration,
 			})
-			logDuration(ctx, info.FullMethod, req, duration)
+			logDuration(ctx, info.FullMethod, req, reply, duration, err)
 		}()
 
-		return handler(ctx, req)
+		reply, err = handler(ctx, req)
+		return
 	}
 }
 
-func logDuration(ctx context.Context, method string, req interface{}, duration time.Duration) {
+func logDuration(ctx context.Context, method string, req, reply interface{}, duration time.Duration, retErr error) {
 	var addr string
 	client, ok := peer.FromContext(ctx)
 	if ok {
 		addr = client.Addr.String()
 	}
-	content, err := json.Marshal(req)
-	if err != nil {
-		logx.WithContext(ctx).Errorf("%s - %s", addr, err.Error())
+
+	reqBytes, _ := json.Marshal(req)
+	replyBytes, _ := json.Marshal(reply)
+
+	if retErr != nil {
+		logx.WithContext(ctx).WithDuration(duration).Errorf("%s - %s - %s - %v", addr, method, string(reqBytes), retErr)
 	} else if duration > serverSlowThreshold {
-		logx.WithContext(ctx).WithDuration(duration).Slowf("[RPC] slowcall - %s - %s - %s",
-			addr, method, string(content))
+		logx.WithContext(ctx).WithDuration(duration).Slowf("[RPC] slowcall - %s - %s - %s - %v",
+			addr, method, string(reqBytes), string(replyBytes))
 	} else {
-		logx.WithContext(ctx).WithDuration(duration).Infof("%s - %s - %s", addr, method, string(content))
+		logx.WithContext(ctx).WithDuration(duration).Infof("%s - %s - %s - %v", addr, method, string(reqBytes), string(replyBytes))
 	}
 }
