@@ -15,25 +15,24 @@ import (
 
 // opentracing interceptor is an interceptor that controls tracing.
 func OpenTracingInterceptor(ctx context.Context, method string, req, reply interface{}, cc *grpc.ClientConn,
-	invoker grpc.UnaryInvoker, opts ...grpc.CallOption)   error {
-		if !jaeger.Enabled() {
-			return invoker(ctx, method, req, reply, cc, opts...)
-		}
-		span, _ := opentracing.StartSpanFromContextWithTracer(ctx, jaeger.Tracer(), method)
-		defer span.Finish()
-		ext.SpanKindRPCClient.Set(span)
-
-		ctx = injectSpanContext(ctx, span)
-		err := invoker(ctx, method, req, reply, cc, opts...)
-		if err != nil {
-			ext.LogError(span, err)
-		}
-		reqContent, _ := json.Marshal(req)
-		replyContent, _ := json.Marshal(reply)
-		span.SetTag("request-info", string(reqContent))
-		span.SetTag("reply-info", string(replyContent))
-		return err
+	invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
+	if !jaeger.Enabled() {
+		return invoker(ctx, method, req, reply, cc, opts...)
 	}
+	span, _ := opentracing.StartSpanFromContextWithTracer(ctx, jaeger.Tracer(), method)
+	defer span.Finish()
+	ext.SpanKindRPCClient.Set(span)
+
+	ctx = injectSpanContext(ctx, span)
+	err := invoker(ctx, method, req, reply, cc, opts...)
+	if err != nil {
+		ext.LogError(span, err)
+	}
+	reqContent, _ := json.Marshal(req)
+	replyContent, _ := json.Marshal(reply)
+	span.SetTag("request-info", string(reqContent))
+	span.SetTag("reply-info", string(replyContent))
+	return err
 }
 
 func injectSpanContext(ctx context.Context, span opentracing.Span) context.Context {
