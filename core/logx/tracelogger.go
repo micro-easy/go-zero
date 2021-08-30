@@ -7,7 +7,8 @@ import (
 	"time"
 
 	"github.com/micro-easy/go-zero/core/timex"
-	"github.com/micro-easy/go-zero/core/trace/tracespec"
+	"github.com/opentracing/opentracing-go"
+	"github.com/uber/jaeger-client-go"
 )
 
 type traceLogger struct {
@@ -62,8 +63,7 @@ func (l *traceLogger) write(writer io.Writer, level, content string) {
 	l.Timestamp = getTimestamp()
 	l.Level = level
 	l.Content = content
-	l.Trace = traceIdFromContext(l.ctx)
-	l.Span = spanIdFromContext(l.ctx)
+	l.Trace, l.Span = getTraceIdSpanId(l.ctx)
 	outputJson(writer, l)
 }
 
@@ -73,20 +73,18 @@ func WithContext(ctx context.Context) Logger {
 	}
 }
 
-func spanIdFromContext(ctx context.Context) string {
-	t, ok := ctx.Value(tracespec.TracingKey).(tracespec.Trace)
-	if !ok {
-		return ""
+func getTraceIdSpanId(ctx context.Context) (string, string) {
+	if ctx != nil {
+		sp := opentracing.SpanFromContext(ctx)
+		if sp != nil {
+			spCtx := sp.Context()
+			if spCtx != nil {
+				spanCtx, ok := spCtx.(jaeger.SpanContext)
+				if ok {
+					return spanCtx.TraceID().String(), spanCtx.SpanID().String()
+				}
+			}
+		}
 	}
-
-	return t.SpanId()
-}
-
-func traceIdFromContext(ctx context.Context) string {
-	t, ok := ctx.Value(tracespec.TracingKey).(tracespec.Trace)
-	if !ok {
-		return ""
-	}
-
-	return t.TraceId()
+	return "", ""
 }
