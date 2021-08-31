@@ -30,7 +30,7 @@ type (
 		Port     int
 		CertFile string `json:",optional"`
 		KeyFile  string `json:",optional"`
-		Verbose  bool   `json:",optional"`
+		Verbose  bool   `json:",default=true"`
 		MaxConns int    `json:",default=10000"`
 		MaxBytes int64  `json:",default=1048576,range=[0:8388608]"`
 		// milliseconds
