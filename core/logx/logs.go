@@ -23,8 +23,12 @@ import (
 )
 
 const (
-	// InfoLevel logs everything
-	InfoLevel = iota
+	// DebugLevel logs everything
+	DebugLevel = iota
+	// InfoLevel logs important messages
+	InfoLevel
+	// WarnLevel logs some unexpected messages
+	WarnLevel
 	// ErrorLevel includes errors, slows, stacks
 	ErrorLevel
 	// SevereLevel only log severe messages
@@ -44,7 +48,9 @@ const (
 	volumeMode  = "volume"
 
 	levelAlert  = "alert"
+	levelDebug  = "debug"
 	levelInfo   = "info"
+	levelWarn   = "warn"
 	levelError  = "error"
 	levelSevere = "severe"
 	levelFatal  = "fatal"
@@ -63,7 +69,9 @@ var (
 
 	writeConsole bool
 	logLevel     uint32
+	debugLog     io.WriteCloser
 	infoLog      io.WriteCloser
+	warnLog      io.WriteCloser
 	errorLog     io.WriteCloser
 	severeLog    io.WriteCloser
 	slowLog      io.WriteCloser
@@ -174,8 +182,10 @@ func Disable() {
 	once.Do(func() {
 		atomic.StoreUint32(&initialized, 1)
 
+		debugLog = iox.NopCloser(ioutil.Discard)
 		infoLog = iox.NopCloser(ioutil.Discard)
 		errorLog = iox.NopCloser(ioutil.Discard)
+		warnLog = iox.NopCloser(ioutil.Discard)
 		severeLog = iox.NopCloser(ioutil.Discard)
 		slowLog = iox.NopCloser(ioutil.Discard)
 		statLog = iox.NopCloser(ioutil.Discard)
@@ -183,20 +193,28 @@ func Disable() {
 	})
 }
 
+func Debug(v ...interface{}) {
+	LevelCaller(debugLog, DebugLevel, levelDebug, 1, v...)
+}
+
+func Debugf(format string, v ...interface{}) {
+	LevelCallerf(debugLog, DebugLevel, levelDebug, 1, format, v...)
+}
+
+func Warn(v ...interface{}) {
+	LevelCaller(warnLog, WarnLevel, levelWarn, 1, v...)
+}
+
+func Warnf(format string, v ...interface{}) {
+	LevelCallerf(warnLog, WarnLevel, levelWarn, 1, format, v...)
+}
+
 func Error(v ...interface{}) {
-	ErrorCaller(1, v...)
+	LevelCaller(errorLog, ErrorLevel, levelError, 1, v...)
 }
 
 func Errorf(format string, v ...interface{}) {
-	ErrorCallerf(1, format, v...)
-}
-
-func ErrorCaller(callDepth int, v ...interface{}) {
-	errorSync(fmt.Sprint(v...), callDepth+callerInnerDepth)
-}
-
-func ErrorCallerf(callDepth int, format string, v ...interface{}) {
-	errorSync(fmt.Sprintf(format, v...), callDepth+callerInnerDepth)
+	LevelCallerf(errorLog, ErrorLevel, levelError, 1, format, v...)
 }
 
 func ErrorStack(v ...interface{}) {
@@ -210,11 +228,33 @@ func ErrorStackf(format string, v ...interface{}) {
 }
 
 func Info(v ...interface{}) {
-	infoSync(fmt.Sprint(v...))
+	LevelCaller(infoLog, InfoLevel, levelInfo, 1, v...)
 }
 
 func Infof(format string, v ...interface{}) {
-	infoSync(fmt.Sprintf(format, v...))
+	LevelCallerf(infoLog, InfoLevel, levelInfo, 1, format, v...)
+}
+
+func LevelCaller(writer io.Writer, level uint32, levelStr string, callDepth int, v ...interface{}) {
+	levelSync(writer, level, levelStr, callDepth+callerInnerDepth, fmt.Sprint(v...))
+}
+
+func LevelCallerf(writer io.Writer, level uint32, levelStr string, callDepth int, format string, v ...interface{}) {
+	levelSync(writer, level, levelStr, callDepth+callerInnerDepth, fmt.Sprintf(format, v...))
+}
+
+func levelSync(writer io.Writer, level uint32, levelStr string, callDepth int, msg string) {
+	if shouldLog(level) {
+		outputLevel(writer, msg, levelStr, callDepth)
+	}
+}
+
+func ErrorCaller(callDepth int, v ...interface{}) {
+	levelSync(errorLog, ErrorLevel, levelError, callDepth+callerInnerDepth, fmt.Sprint(v...))
+}
+
+func ErrorCallerf(callDepth int, format string, v ...interface{}) {
+	levelSync(errorLog, ErrorLevel, levelError, callDepth+callerInnerDepth, fmt.Sprintf(format, v...))
 }
 
 func Must(err error) {
@@ -281,12 +321,6 @@ func createOutput(path string) (io.WriteCloser, error) {
 		options.gzipEnabled), options.gzipEnabled)
 }
 
-func errorSync(msg string, callDepth int) {
-	if shouldLog(ErrorLevel) {
-		outputError(errorLog, msg, callDepth)
-	}
-}
-
 func formatWithCaller(msg string, callDepth int) string {
 	var buf strings.Builder
 
@@ -307,10 +341,15 @@ func getCaller(callDepth int) string {
 	_, file, line, ok := runtime.Caller(callDepth)
 	if ok {
 		short := file
+		count := 0
 		for i := len(file) - 1; i > 0; i-- {
 			if file[i] == '/' {
-				short = file[i+1:]
-				break
+				count++
+				if count == 2 {
+					short = file[i+1:]
+					break
+				}
+
 			}
 		}
 		buf.WriteString(short)
@@ -331,12 +370,6 @@ func handleOptions(opts []LogOption) {
 	}
 }
 
-func infoSync(msg string) {
-	if shouldLog(InfoLevel) {
-		output(infoLog, levelInfo, msg)
-	}
-}
-
 func output(writer io.Writer, level, msg string) {
 	info := logEntry{
 		Timestamp: getTimestamp(),
@@ -346,9 +379,9 @@ func output(writer io.Writer, level, msg string) {
 	outputJson(writer, info)
 }
 
-func outputError(writer io.Writer, msg string, callDepth int) {
+func outputLevel(writer io.Writer, msg, level string, callDepth int) {
 	content := formatWithCaller(msg, callDepth)
-	output(writer, levelError, content)
+	output(writer, level, content)
 }
 
 func outputJson(writer io.Writer, info interface{}) {
@@ -363,8 +396,12 @@ func outputJson(writer io.Writer, info interface{}) {
 
 func setupLogLevel(c LogConf) {
 	switch c.Level {
+	case levelDebug:
+		SetLevel(DebugLevel)
 	case levelInfo:
 		SetLevel(InfoLevel)
+	case levelWarn:
+		SetLevel(WarnLevel)
 	case levelError:
 		SetLevel(ErrorLevel)
 	case levelSevere:
@@ -378,7 +415,9 @@ func setupWithConsole(c LogConf) {
 		writeConsole = true
 		setupLogLevel(c)
 
+		debugLog = newLogWriter(log.New(os.Stdout, "", flags))
 		infoLog = newLogWriter(log.New(os.Stdout, "", flags))
+		warnLog = newLogWriter(log.New(os.Stderr, "", flags))
 		errorLog = newLogWriter(log.New(os.Stderr, "", flags))
 		severeLog = newLogWriter(log.New(os.Stderr, "", flags))
 		slowLog = newLogWriter(log.New(os.Stderr, "", flags))

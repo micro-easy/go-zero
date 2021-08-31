@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/micro-easy/go-zero/core/trace/tracespec"
+	"github.com/stretchr/testify/assert"
 )
 
 const (
@@ -22,7 +22,7 @@ var mock tracespec.Trace = new(mockTrace)
 func TestTraceLog(t *testing.T) {
 	var buf mockWriter
 	ctx := context.WithValue(context.Background(), tracespec.TracingKey, mock)
-	WithContext(ctx).(*traceLogger).write(&buf, levelInfo, testlog)
+	WithContext(ctx).(*traceLogger).write(&buf, levelInfo, testlog, 1)
 	assert.True(t, strings.Contains(buf.String(), mockTraceId))
 	assert.True(t, strings.Contains(buf.String(), mockSpanId))
 }
