@@ -18,17 +18,16 @@ func UnaryStatInterceptor(metrics *stat.Metrics) grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo,
 		handler grpc.UnaryHandler) (resp interface{}, err error) {
 
-		var reply interface{}
 		startTime := timex.Now()
 		defer func() {
 			duration := timex.Since(startTime)
 			metrics.Add(stat.Task{
 				Duration: duration,
 			})
-			logDuration(ctx, info.FullMethod, req, reply, duration, err)
+			logDuration(ctx, info.FullMethod, req, resp, duration, err)
 		}()
 
-		reply, err = handler(ctx, req)
+		resp, err = handler(ctx, req)
 		return
 	}
 }

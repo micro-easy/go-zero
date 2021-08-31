@@ -27,15 +27,15 @@ func UnaryOpenTracingInterceptor() grpc.UnaryServerInterceptor {
 		span := jaeger.Tracer().StartSpan(info.FullMethod, ext.RPCServerOption(spanCtx))
 		defer span.Finish()
 		ctx = opentracing.ContextWithSpan(ctx, span)
-		reply, err := handler(ctx, req)
+		resp, err = handler(ctx, req)
 		if err != nil {
 			ext.LogError(span, err)
 		}
 		// set request and reply tag
 		reqContent, _ := json.Marshal(req)
-		replyContent, _ := json.Marshal(reply)
+		replyContent, _ := json.Marshal(resp)
 		span.SetTag("request-info", string(reqContent))
 		span.SetTag("reply-info", string(replyContent))
-		return reply, err
+		return resp, err
 	}
 }
