@@ -11,7 +11,7 @@ import (
 	"github.com/uber/jaeger-client-go"
 )
 
-const traceLoggerCallerInnerDepth = 3
+const traceLoggerCallerInnerDepth = 4
 
 type traceLogger struct {
 	logEntry
