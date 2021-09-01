@@ -6,4 +6,5 @@ type Config struct {
 	SamplerParam       float64 `json:",default=0.01"`
 	LogSpans           bool    `json:",default=false"`
 	LocalAgentHostPort string  `json:",default=127.0.0.1:6831"`
+	Disabled           bool    `json:",default=false"`
 }

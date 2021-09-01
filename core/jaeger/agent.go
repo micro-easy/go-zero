@@ -30,6 +30,7 @@ func Tracer() opentracing.Tracer {
 func StartAgent(conf Config) {
 	once.Do(func() {
 		cfg := &config.Configuration{
+			Disabled:    conf.Disabled,
 			ServiceName: conf.ServiceName,
 			Sampler: &config.SamplerConfig{
 				Type:  conf.SamplerType,
