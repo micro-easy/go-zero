@@ -3,6 +3,7 @@ package jaeger
 import (
 	"fmt"
 	"sync"
+	"time"
 
 	"github.com/micro-easy/go-zero/core/proc"
 	"github.com/micro-easy/go-zero/core/syncx"
@@ -33,8 +34,9 @@ func StartAgent(conf Config) {
 			Disabled:    conf.Disabled,
 			ServiceName: conf.ServiceName,
 			Sampler: &config.SamplerConfig{
-				Type:  conf.SamplerType,
-				Param: conf.SamplerParam,
+				Type:                    conf.SamplerType,
+				Param:                   conf.SamplerParam,
+				SamplingRefreshInterval: time.Duration(conf.SamplingRefreshInterval) * time.Second,
 			},
 			Reporter: &config.ReporterConfig{
 				LogSpans:           conf.LogSpans,
