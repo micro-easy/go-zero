@@ -8,4 +8,5 @@ type Config struct {
 	LocalAgentHostPort      string  `json:",default=127.0.0.1:6831"`
 	Disabled                bool    `json:",default=false"`
 	SamplingRefreshInterval int64   `json:",default=10"`
+	MaxTagValueLength       int64   `json:",default=512"`
 }

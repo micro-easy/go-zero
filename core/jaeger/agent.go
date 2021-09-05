@@ -44,7 +44,7 @@ func StartAgent(conf Config) {
 			},
 		}
 
-		tracer, closer, err := cfg.NewTracer(config.Logger(jaeger.StdLogger))
+		tracer, closer, err := cfg.NewTracer(config.Logger(jaeger.StdLogger), config.MaxTagValueLength(int(conf.MaxTagValueLength)))
 		if err != nil {
 			panic(fmt.Sprintf("ERROR: cannot init Jaeger: %v\n", err))
 		}
