@@ -36,7 +36,7 @@ func OpenTracingHandler(next http.Handler) http.Handler {
 		next.ServeHTTP(ow, r.WithContext(ctx))
 		span.SetTag("request-info", string(bodyBytes))
 		span.SetTag("reply-info", buf.String())
-		span.SetTag("response-code", ow.code)
+		span.SetTag("http.status_code", ow.code)
 	})
 }
 

@@ -8,6 +8,7 @@ import (
 
 	"github.com/micro-easy/go-zero/core/timex"
 	"github.com/opentracing/opentracing-go"
+	"github.com/opentracing/opentracing-go/ext"
 	"github.com/uber/jaeger-client-go"
 )
 
@@ -22,49 +23,97 @@ type traceLogger struct {
 
 func CtxDebug(ctx context.Context, v ...interface{}) {
 	if shouldLog(DebugLevel) {
-		NewTraceLogger(ctx).write(debugLog, levelDebug, fmt.Sprint(v...), traceLoggerCallerInnerDepth)
+		NewTraceLogger(ctx).write(debugLog, levelDebug, fmt.Sprint(v...), traceLoggerCallerInnerDepth, false, DebugLevel)
 	}
 }
 
 func CtxDebugf(ctx context.Context, format string, v ...interface{}) {
 	if shouldLog(DebugLevel) {
-		NewTraceLogger(ctx).write(debugLog, levelDebug, fmt.Sprintf(format, v...), traceLoggerCallerInnerDepth)
+		NewTraceLogger(ctx).write(debugLog, levelDebug, fmt.Sprintf(format, v...), traceLoggerCallerInnerDepth, false, DebugLevel)
 	}
 }
 
 func CtxInfo(ctx context.Context, v ...interface{}) {
 	if shouldLog(InfoLevel) {
-		NewTraceLogger(ctx).write(infoLog, levelInfo, fmt.Sprint(v...), traceLoggerCallerInnerDepth)
+		NewTraceLogger(ctx).write(infoLog, levelInfo, fmt.Sprint(v...), traceLoggerCallerInnerDepth, false, InfoLevel)
 	}
 }
 
 func CtxInfof(ctx context.Context, format string, v ...interface{}) {
 	if shouldLog(InfoLevel) {
-		NewTraceLogger(ctx).write(infoLog, levelInfo, fmt.Sprintf(format, v...), traceLoggerCallerInnerDepth)
+		NewTraceLogger(ctx).write(infoLog, levelInfo, fmt.Sprintf(format, v...), traceLoggerCallerInnerDepth, false, InfoLevel)
 	}
 }
 
 func CtxWarn(ctx context.Context, v ...interface{}) {
 	if shouldLog(WarnLevel) {
-		NewTraceLogger(ctx).write(warnLog, levelWarn, fmt.Sprint(v...), traceLoggerCallerInnerDepth)
+		NewTraceLogger(ctx).write(warnLog, levelWarn, fmt.Sprint(v...), traceLoggerCallerInnerDepth, false, WarnLevel)
 	}
 }
 
 func CtxWarnf(ctx context.Context, format string, v ...interface{}) {
 	if shouldLog(WarnLevel) {
-		NewTraceLogger(ctx).write(warnLog, levelWarn, fmt.Sprintf(format, v...), traceLoggerCallerInnerDepth)
+		NewTraceLogger(ctx).write(warnLog, levelWarn, fmt.Sprintf(format, v...), traceLoggerCallerInnerDepth, false, WarnLevel)
 	}
 }
 
 func CtxError(ctx context.Context, v ...interface{}) {
 	if shouldLog(ErrorLevel) {
-		NewTraceLogger(ctx).write(errorLog, levelError, fmt.Sprint(v...), traceLoggerCallerInnerDepth)
+		NewTraceLogger(ctx).write(errorLog, levelError, fmt.Sprint(v...), traceLoggerCallerInnerDepth, false, ErrorLevel)
 	}
 }
 
 func CtxErrorf(ctx context.Context, format string, v ...interface{}) {
 	if shouldLog(ErrorLevel) {
-		NewTraceLogger(ctx).write(errorLog, levelError, fmt.Sprintf(format, v...), traceLoggerCallerInnerDepth)
+		NewTraceLogger(ctx).write(errorLog, levelError, fmt.Sprintf(format, v...), traceLoggerCallerInnerDepth, false, ErrorLevel)
+	}
+}
+
+func CtxSpanDebug(ctx context.Context, v ...interface{}) {
+	if shouldLog(DebugLevel) {
+		NewTraceLogger(ctx).write(debugLog, levelDebug, fmt.Sprint(v...), traceLoggerCallerInnerDepth, true, DebugLevel)
+	}
+}
+
+func CtxSpanDebugf(ctx context.Context, format string, v ...interface{}) {
+	if shouldLog(DebugLevel) {
+		NewTraceLogger(ctx).write(debugLog, levelDebug, fmt.Sprintf(format, v...), traceLoggerCallerInnerDepth, true, DebugLevel)
+	}
+}
+
+func CtxSpanInfo(ctx context.Context, v ...interface{}) {
+	if shouldLog(InfoLevel) {
+		NewTraceLogger(ctx).write(infoLog, levelInfo, fmt.Sprint(v...), traceLoggerCallerInnerDepth, true, InfoLevel)
+	}
+}
+
+func CtxSpanInfof(ctx context.Context, format string, v ...interface{}) {
+	if shouldLog(InfoLevel) {
+		NewTraceLogger(ctx).write(infoLog, levelInfo, fmt.Sprintf(format, v...), traceLoggerCallerInnerDepth, true, InfoLevel)
+	}
+}
+
+func CtxSpanWarn(ctx context.Context, v ...interface{}) {
+	if shouldLog(WarnLevel) {
+		NewTraceLogger(ctx).write(warnLog, levelWarn, fmt.Sprint(v...), traceLoggerCallerInnerDepth, true, WarnLevel)
+	}
+}
+
+func CtxSpanWarnf(ctx context.Context, format string, v ...interface{}) {
+	if shouldLog(WarnLevel) {
+		NewTraceLogger(ctx).write(warnLog, levelWarn, fmt.Sprintf(format, v...), traceLoggerCallerInnerDepth, true, WarnLevel)
+	}
+}
+
+func CtxSpanError(ctx context.Context, v ...interface{}) {
+	if shouldLog(ErrorLevel) {
+		NewTraceLogger(ctx).write(errorLog, levelError, fmt.Sprint(v...), traceLoggerCallerInnerDepth, true, ErrorLevel)
+	}
+}
+
+func CtxSpanErrorf(ctx context.Context, format string, v ...interface{}) {
+	if shouldLog(ErrorLevel) {
+		NewTraceLogger(ctx).write(errorLog, levelError, fmt.Sprintf(format, v...), traceLoggerCallerInnerDepth, true, ErrorLevel)
 	}
 }
 
@@ -76,37 +125,37 @@ func NewTraceLogger(ctx context.Context) *traceLogger {
 
 func (l *traceLogger) Error(v ...interface{}) {
 	if shouldLog(ErrorLevel) {
-		l.write(errorLog, levelError, fmt.Sprint(v...), traceLoggerCallerInnerDepth)
+		l.write(errorLog, levelError, fmt.Sprint(v...), traceLoggerCallerInnerDepth, false, ErrorLevel)
 	}
 }
 
 func (l *traceLogger) Errorf(format string, v ...interface{}) {
 	if shouldLog(ErrorLevel) {
-		l.write(errorLog, levelError, fmt.Sprintf(format, v...), traceLoggerCallerInnerDepth)
+		l.write(errorLog, levelError, fmt.Sprintf(format, v...), traceLoggerCallerInnerDepth, false, ErrorLevel)
 	}
 }
 
 func (l *traceLogger) Info(v ...interface{}) {
 	if shouldLog(InfoLevel) {
-		l.write(infoLog, levelInfo, fmt.Sprint(v...), traceLoggerCallerInnerDepth)
+		l.write(infoLog, levelInfo, fmt.Sprint(v...), traceLoggerCallerInnerDepth, false, InfoLevel)
 	}
 }
 
 func (l *traceLogger) Infof(format string, v ...interface{}) {
 	if shouldLog(InfoLevel) {
-		l.write(infoLog, levelInfo, fmt.Sprintf(format, v...), traceLoggerCallerInnerDepth)
+		l.write(infoLog, levelInfo, fmt.Sprintf(format, v...), traceLoggerCallerInnerDepth, false, InfoLevel)
 	}
 }
 
 func (l *traceLogger) Slow(v ...interface{}) {
 	if shouldLog(ErrorLevel) {
-		l.write(slowLog, levelSlow, fmt.Sprint(v...), traceLoggerCallerInnerDepth)
+		l.write(slowLog, levelSlow, fmt.Sprint(v...), traceLoggerCallerInnerDepth, false, ErrorLevel)
 	}
 }
 
 func (l *traceLogger) Slowf(format string, v ...interface{}) {
 	if shouldLog(ErrorLevel) {
-		l.write(slowLog, levelSlow, fmt.Sprintf(format, v...), traceLoggerCallerInnerDepth)
+		l.write(slowLog, levelSlow, fmt.Sprintf(format, v...), traceLoggerCallerInnerDepth, false, ErrorLevel)
 	}
 }
 
@@ -115,11 +164,14 @@ func (l *traceLogger) WithDuration(duration time.Duration) Logger {
 	return l
 }
 
-func (l *traceLogger) write(writer io.Writer, level, content string, callDepth int) {
+func (l *traceLogger) write(writer io.Writer, level, content string, callDepth int, withSpan bool, levelInt int) {
 	l.Timestamp = getTimestamp()
 	l.Level = level
 	l.Content = formatWithCaller(content, callDepth)
 	l.Trace, l.Span = getTraceIdSpanId(l.ctx)
+	if withSpan {
+		spanLog(l.ctx, level, l.Content, levelInt)
+	}
 	outputJson(writer, l)
 }
 
@@ -143,4 +195,16 @@ func getTraceIdSpanId(ctx context.Context) (string, string) {
 		}
 	}
 	return "", ""
+}
+
+func spanLog(ctx context.Context, logLevel, logContent string, logLevelInt int) {
+	if ctx != nil {
+		sp := opentracing.SpanFromContext(ctx)
+		if sp != nil {
+			sp.LogKV("level", logLevel, "content", logContent)
+			if logLevelInt >= ErrorLevel {
+				ext.Error.Set(sp, true)
+			}
+		}
+	}
 }
