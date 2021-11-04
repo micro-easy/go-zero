@@ -18,6 +18,7 @@ import (
 	"github.com/micro-easy/go-zero/tools/goctl/api/validate"
 	"github.com/micro-easy/go-zero/tools/goctl/configgen"
 	"github.com/micro-easy/go-zero/tools/goctl/docker"
+	"github.com/micro-easy/go-zero/tools/goctl/gateway"
 	model "github.com/micro-easy/go-zero/tools/goctl/model/sql/command"
 	rpc "github.com/micro-easy/go-zero/tools/goctl/rpc/cli"
 	"github.com/micro-easy/go-zero/tools/goctl/tpl"
@@ -192,6 +193,21 @@ var (
 				},
 			},
 			Action: docker.DockerCommand,
+		},
+		{
+			Name:  "gateway",
+			Usage: `generate rpc gateway from proto file`,
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "dir",
+					Usage: "the target dir",
+				},
+				cli.StringFlag{
+					Name:  "proto",
+					Usage: "the proto file",
+				},
+			},
+			Action: gateway.Gateway,
 		},
 		{
 			Name:  "rpc",
