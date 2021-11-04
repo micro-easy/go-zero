@@ -1,14 +1,18 @@
 package gateway
 
 import (
+	"fmt"
 	"os/exec"
 	"path/filepath"
 
 	"github.com/micro-easy/go-zero/tools/goctl/util"
+	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/types/descriptorpb"
 
 	goformat "go/format"
 
 	"github.com/micro-easy/go-zero/tools/goctl/util/console"
+	options "google.golang.org/genproto/googleapis/api/annotations"
 )
 
 type GatewayGenerator struct {
@@ -129,4 +133,19 @@ func formatCode(code string) string {
 	}
 
 	return string(ret)
+}
+
+func extractAPIOptions(meth *descriptorpb.MethodDescriptorProto) (*options.HttpRule, error) {
+	if meth.Options == nil {
+		return nil, nil
+	}
+	if !proto.HasExtension(meth.Options, options.E_Http) {
+		return nil, nil
+	}
+	ext := proto.GetExtension(meth.Options, options.E_Http)
+	opts, ok := ext.(*options.HttpRule)
+	if !ok {
+		return nil, fmt.Errorf("extension is %T; want an HttpRule", ext)
+	}
+	return opts, nil
 }

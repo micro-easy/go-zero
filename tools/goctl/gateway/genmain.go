@@ -3,9 +3,9 @@ package gateway
 import (
 	"bytes"
 	"fmt"
-	"html/template"
 	"path/filepath"
 	"strings"
+	"text/template"
 
 	"github.com/micro-easy/go-zero/tools/goctl/api/util"
 	ctlutil "github.com/micro-easy/go-zero/tools/goctl/util"

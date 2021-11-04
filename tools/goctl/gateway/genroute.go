@@ -2,7 +2,7 @@ package gateway
 
 import (
 	"bytes"
-	"html/template"
+	"text/template"
 
 	"github.com/micro-easy/go-zero/tools/goctl/api/util"
 	ctlutil "github.com/micro-easy/go-zero/tools/goctl/util"

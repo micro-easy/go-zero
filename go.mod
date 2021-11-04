@@ -59,7 +59,7 @@ require (
 	golang.org/x/text v0.3.3 // indirect
 	golang.org/x/time v0.0.0-20191024005414-555d28b269f0
 	golang.org/x/tools v0.0.0-20200410132612-ae9902aceb98 // indirect
-	google.golang.org/genproto v0.0.0-20200729003335-053ba62fc06f // indirect
+	google.golang.org/genproto v0.0.0-20200729003335-053ba62fc06f
 	google.golang.org/grpc v1.29.1
 	google.golang.org/protobuf v1.25.0
 	gopkg.in/cheggaaa/pb.v1 v1.0.28
