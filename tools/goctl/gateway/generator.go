@@ -85,6 +85,21 @@ func (g *GatewayGenerator) Generate(src, target string, protoImportPath []string
 		return err
 	}
 
+	err = g.genHandler(abs)
+	if err != nil {
+		return err
+	}
+
+	err = g.genRoute(abs)
+	if err != nil {
+		return err
+	}
+
+	err = g.genLogic(abs)
+	if err != nil {
+		return err
+	}
+
 	// err = g.g.GenCall(dirCtx, proto)
 
 	console.NewColorConsole().MarkDone()
