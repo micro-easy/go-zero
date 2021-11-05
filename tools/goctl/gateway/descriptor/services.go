@@ -5,6 +5,7 @@ import (
 
 	"github.com/golang/glog"
 	"github.com/jhump/protoreflect/desc"
+	"github.com/micro-easy/go-zero/tools/goctl/gateway/casing"
 	"github.com/micro-easy/go-zero/tools/goctl/gateway/httprule"
 	options "google.golang.org/genproto/googleapis/api/annotations"
 	"google.golang.org/protobuf/types/descriptorpb"
@@ -96,6 +97,48 @@ func (b *Binding) ExplicitParams() []string {
 		result = append(result, p.FieldPath.String())
 	}
 	return result
+}
+
+// hasEnumPathParam returns true if the path parameter slice contains a parameter
+// that maps to a enum proto field and that the enum proto field is or isn't repeated
+// based on the provided 'repeated' parameter.
+func (b *Binding) HasEnumPathParam() bool {
+	for _, p := range b.PathParams {
+		if p.IsEnum() && p.IsRepeated() {
+			return true
+		}
+	}
+	return false
+}
+
+// LookupEnum looks up a enum type by path parameter.
+func (b *Binding) LookupEnum(p Parameter) *desc.EnumDescriptor {
+	// p.GetFile().
+	return p.Target.GetEnumType()
+}
+
+// FieldMaskField returns the golang-style name of the variable for a FieldMask, if there is exactly one of that type in
+// the message. Otherwise, it returns an empty string.
+func (b *Binding) FieldMaskField() string {
+	var fieldMaskField *desc.FieldDescriptor
+	// var fieldMaskField *descriptor.Field
+	for _, f := range b.Method.GetInputType().GetFields() {
+		if f.AsFieldDescriptorProto().GetTypeName() == ".google.protobuf.FieldMask" {
+			// if there is more than 1 FieldMask for this request, then return none
+			if fieldMaskField != nil {
+				return ""
+			}
+			fieldMaskField = f
+		}
+	}
+	if fieldMaskField != nil {
+		return casing.Camel(fieldMaskField.GetName())
+	}
+	return ""
+}
+
+func (b *Binding) GetRepeatedPathParamSeparator() rune {
+	return ','
 }
 
 type MethodWithBindings struct {

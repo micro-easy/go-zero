@@ -10,14 +10,15 @@ import (
 	"google.golang.org/protobuf/types/descriptorpb"
 )
 
-func HandleFile(file *desc.FileDescriptor, fn func(meth *MethodWithBindings) error) error {
+func GetMethodWithBindings(file *desc.FileDescriptor) ([]*MethodWithBindings, error) {
+	var methods []*MethodWithBindings
 	for _, svc := range file.GetServices() {
 		for _, md := range svc.GetMethods() {
 			var optsList []*options.HttpRule
 			opts, err := extractAPIOptions(md.AsMethodDescriptorProto())
 			if err != nil {
 				glog.Errorf("Failed to extract HttpRule from %s.%s: %v", svc.GetName(), md.GetName(), err)
-				return err
+				return nil, err
 			}
 			// 暂时先不管
 			// optsList := r.LookupExternalHTTPRules((&Method{Service: svc, MethodDescriptorProto: md}).FQMN())
@@ -43,14 +44,12 @@ func HandleFile(file *desc.FileDescriptor, fn func(meth *MethodWithBindings) err
 
 			meth, err := newMethod(md, optsList)
 			if err != nil {
-				return err
+				return nil, err
 			}
-			if err := fn(meth); err != nil {
-				return err
-			}
+			methods = append(methods, meth)
 		}
 	}
-	return nil
+	return methods, nil
 }
 
 func extractAPIOptions(meth *descriptorpb.MethodDescriptorProto) (*options.HttpRule, error) {

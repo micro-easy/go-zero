@@ -5,6 +5,9 @@ import (
 	"os/exec"
 	"path/filepath"
 
+	"github.com/micro-easy/go-zero/tools/goctl/gateway/descriptor"
+
+	parse "github.com/jhump/protoreflect/desc/protoparse"
 	"github.com/micro-easy/go-zero/tools/goctl/util"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/descriptorpb"
@@ -89,20 +92,38 @@ func (g *GatewayGenerator) Generate(src, target string, protoImportPath []string
 		return err
 	}
 
-	err = g.genHandler(abs)
+	parser := &parse.Parser{}
+	fds, err := parser.ParseFiles("greet.proto")
+	if err != nil {
+		fmt.Println(err)
+	}
+	fd := fds[0]
+	methods, err := descriptor.GetMethodWithBindings(fd)
 	if err != nil {
 		return err
 	}
 
-	err = g.genRoute(abs)
-	if err != nil {
-		return err
+	pbImportPath := "xxx/greet.pb.go"
+	for _, meth := range methods {
+		if err := g.genHandler(abs, pbImportPath, meth); err != nil {
+			return err
+		}
 	}
 
-	err = g.genLogic(abs)
-	if err != nil {
-		return err
-	}
+	// err = g.genHandler(abs)
+	// if err != nil {
+	// 	return err
+	// }
+
+	// err = g.genRoute(abs)
+	// if err != nil {
+	// 	return err
+	// }
+
+	// err = g.genLogic(abs)
+	// if err != nil {
+	// 	return err
+	// }
 
 	// err = g.g.GenCall(dirCtx, proto)
 
