@@ -22,7 +22,7 @@ import (
 
 func {{.b.Method.GetName}}V{{.b.Index}}Handler(ctx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req {{.b.Method.GetService.GetName}}.{{.b.Method.GetInputType.GetName}}
+		var req {{.b.Method.GetInputType.GetFullyQualifiedName}}
 		if err := httpx.Parse(r, &req); err != nil {
 			httpx.Error(w, err)
 			return
@@ -50,7 +50,7 @@ func {{.b.Method.GetName}}V{{.b.Index}}Handler(ctx *svc.ServiceContext) http.Han
 		return  
 	}
 {{if $param.IsNestedProto3}}
-	err = runtime.PopulateFieldFromPath(&protoReq, {{$param | printf "%q"}}, val)
+	err = runtime.PopulateFieldFromPath(&req, {{$param | printf "%q"}}, val)
 	if err != nil {
 		httpx.Error(w,fmt.Errorf("type mismatch, parameter: %s, error: %v", {{$param | printf "%q"}}, err)
 		return 
