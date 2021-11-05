@@ -129,6 +129,12 @@ func (g *GatewayGenerator) genHandler(dir, pbImportPath string, meth *descriptor
 		if err != nil {
 			return err
 		}
+
+		formatCode := formatCode(buffer.String())
+		_, err = fp.WriteString(formatCode)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
