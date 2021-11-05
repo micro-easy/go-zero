@@ -56,33 +56,33 @@ func {{.b.Method.GetName}}V{{.b.Index}}Handler(ctx *svc.ServiceContext) http.Han
 		return 
 	}
 	{{if $enum}}
-		e{{if $param.IsRepeated}}s{{end}}, err = {{$param.ConvertFuncExpr}}(val{{if $param.IsRepeated}}, {{$binding.GetRepeatedPathParamSeparator | printf "%c" | printf "%q"}}{{end}}, {{$enum.GetName .ImportPath}}_value)
+		e{{if $param.IsRepeated}}s{{end}}, err = {{$param.ConvertFuncExpr}}(val{{if $param.IsRepeated}}, {{$binding.GetRepeatedPathParamSeparator | printf "%c" | printf "%q"}}{{end}}, {{$enum.GetFullyQualifiedName}}_value)
 		if err != nil {
 			httpx.Error(w,fmt.Errorf( "could not parse path as enum value, parameter: %s, error: %v", {{$param | printf "%q"}}, err)
 			return 
 		}
 	{{end}}
 {{else if $enum}}
-	e{{if $param.IsRepeated}}s{{end}}, err = {{$param.ConvertFuncExpr}}(val{{if $param.IsRepeated}}, {{$binding.GetRepeatedPathParamSeparator | printf "%c" | printf "%q"}}{{end}}, {{$enum.GetName .ImportPath}}_value)
+	e{{if $param.IsRepeated}}s{{end}}, err = {{$param.ConvertFuncExpr}}(val{{if $param.IsRepeated}}, {{$binding.GetRepeatedPathParamSeparator | printf "%c" | printf "%q"}}{{end}}, {{$enum.GetFullyQualifiedName}}_value)
 	if err != nil {
 		httpx.Error("type mismatch, parameter: %s, error: %v", {{$param | printf "%q"}}, err)
 		return 
 	}
 {{else}}
-	{{$param.AssignableExpr "protoReq"}}, err = {{$param.ConvertFuncExpr}}(val{{if $param.IsRepeated}}, {{$binding.GetRepeatedPathParamSeparator | printf "%c" | printf "%q"}}{{end}})
+	{{$param.AssignableExpr "req"}}, err = {{$param.ConvertFuncExpr}}(val{{if $param.IsRepeated}}, {{$binding.GetRepeatedPathParamSeparator | printf "%c" | printf "%q"}}{{end}})
 	if err != nil {
 		httpx.Error("type mismatch, parameter: %s, error: %v", {{$param | printf "%q"}}, err)
 		return 
 	}
 {{end}}
 {{if and $enum $param.IsRepeated}}
-	s := make([]{{$enum.GetName .ImportPath}}, len(es))
+	s := make([]{{$enum.GetFullyQualifiedName}}, len(es))
 	for i, v := range es {
-		s[i] = {{$enum.GetName .ImportPath}}(v)
+		s[i] = {{$enum.GetFullyQualifiedName}}(v)
 	}
-	{{$param.AssignableExpr "protoReq"}} = s
+	{{$param.AssignableExpr "req"}} = s
 {{else if $enum}}
-	{{$param.AssignableExpr "protoReq"}} = {{$enum.GetName .ImportPath}}(e)
+	{{$param.AssignableExpr "req"}} = {{$enum.GetFullyQualifiedName}}(e)
 {{end}}
 	{{end}}
 {{end}}
