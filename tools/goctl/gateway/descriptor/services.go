@@ -104,6 +104,15 @@ func (b *Binding) ExplicitParams() []string {
 // based on the provided 'repeated' parameter.
 func (b *Binding) HasEnumPathParam() bool {
 	for _, p := range b.PathParams {
+		if p.IsEnum() && !p.IsRepeated() {
+			return true
+		}
+	}
+	return false
+}
+
+func (b *Binding) HasRepeatedEnumPathParam() bool {
+	for _, p := range b.PathParams {
 		if p.IsEnum() && p.IsRepeated() {
 			return true
 		}
