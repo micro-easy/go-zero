@@ -44,7 +44,7 @@ func {{.b.Method.GetName}}V{{.b.Index}}Handler(ctx *svc.ServiceContext) http.Han
 	{{$binding := .b}}
 	{{range $param := .b.PathParams}}
 	{{$enum := $binding.LookupEnum $param}}
-	val, ok = pathParams[{{$param | printf "%q"}}]
+	val, ok = context.Vars[{{$param | printf "%q"}}]
 	if !ok {
 		httpx.Error(w,fmt.Errorf("missing parameter %s", {{$param | printf "%q"}}))
 		return  
