@@ -41,31 +41,27 @@ func (g *GatewayGenerator) Generate(src, target string, protoImportPath []string
 		return err
 	}
 
-	// projectCtx, err := ctx.Prepare(abs)
-	// if err != nil {
-	// 	return err
-	// }
-
-	// p := parser.NewDefaultProtoParser()
-	// proto, err := p.Parse(src)
-	// if err != nil {
-	// 	return err
-	// }
-
-	// dirCtx, err := mkdir(projectCtx, proto)
-	// if err != nil {
-	// 	return err
-	// }
-
-	err = g.genEtc(abs)
+	parser := &parse.Parser{}
+	fds, err := parser.ParseFiles("greet.proto")
+	if err != nil {
+		return err
+	}
+	fd := fds[0]
+	methods, err := descriptor.GetMethodWithBindings(fd)
 	if err != nil {
 		return err
 	}
 
-	// err = g.g.GenPb(dirCtx, protoImportPath, proto)
-	// if err != nil {
-	// 	return err
-	// }
+	if len(methods) == 0 {
+		return fmt.Errorf("no method defined")
+	}
+
+	serviceName := methods[0].GetService().GetName()
+
+	err = g.genEtc(abs, serviceName)
+	if err != nil {
+		return err
+	}
 
 	err = g.genConfig(abs)
 	if err != nil {
@@ -77,28 +73,7 @@ func (g *GatewayGenerator) Generate(src, target string, protoImportPath []string
 		return err
 	}
 
-	// err = g.g.GenLogic(dirCtx, proto)
-	// if err != nil {
-	// 	return err
-	// }
-
-	// err = g.g.GenServer(dirCtx, proto)
-	// if err != nil {
-	// 	return err
-	// }
-
-	err = g.genMain(abs)
-	if err != nil {
-		return err
-	}
-
-	parser := &parse.Parser{}
-	fds, err := parser.ParseFiles("greet.proto")
-	if err != nil {
-		fmt.Println(err)
-	}
-	fd := fds[0]
-	methods, err := descriptor.GetMethodWithBindings(fd)
+	err = g.genMain(abs, serviceName)
 	if err != nil {
 		return err
 	}
@@ -108,24 +83,15 @@ func (g *GatewayGenerator) Generate(src, target string, protoImportPath []string
 		if err := g.genHandler(abs, pbImportPath, meth); err != nil {
 			return err
 		}
+
+		if err := g.genLogic(abs, pbImportPath, meth); err != nil {
+			return err
+		}
 	}
 
-	// err = g.genHandler(abs)
-	// if err != nil {
-	// 	return err
-	// }
-
-	// err = g.genRoute(abs)
-	// if err != nil {
-	// 	return err
-	// }
-
-	// err = g.genLogic(abs)
-	// if err != nil {
-	// 	return err
-	// }
-
-	// err = g.g.GenCall(dirCtx, proto)
+	if err := g.genRoutes(abs, pbImportPath, methods); err != nil {
+		return err
+	}
 
 	console.NewColorConsole().MarkDone()
 

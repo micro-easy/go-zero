@@ -41,9 +41,7 @@ func main() {
 }
 `
 
-func (g *GatewayGenerator) genMain(dir string) error {
-	// TODO service name
-	serviceName := "todoservicename"
+func (g *GatewayGenerator) genMain(dir, serviceName string) error {
 	name := strings.ToLower(serviceName)
 	if strings.HasSuffix(name, "-api") {
 		name = strings.ReplaceAll(name, "-api", "")

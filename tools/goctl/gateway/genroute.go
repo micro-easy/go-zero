@@ -2,10 +2,14 @@ package gateway
 
 import (
 	"bytes"
+	"fmt"
+	"strings"
 	"text/template"
 
 	"github.com/micro-easy/go-zero/tools/goctl/api/util"
+	"github.com/micro-easy/go-zero/tools/goctl/gateway/descriptor"
 	ctlutil "github.com/micro-easy/go-zero/tools/goctl/util"
+	"github.com/micro-easy/go-zero/tools/goctl/vars"
 )
 
 const (
@@ -20,13 +24,20 @@ import (
 )
 
 func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
-	{{.routesAdditions}}
-}
-`
-	routesAdditionTemplate = `
 	engine.AddRoutes(
-		{{.routes}} {{.jwt}}{{.signature}}
+		[]rest.Route{
+			{{range $meth := .Meths}}
+			{{range $b := $meth.Bindings}}
+			{
+				Method: {{gethttpmethod $b.HTTPMethod}},
+				Path:{{replacePath $b.PathTmpl.Template}},
+				Handler:{{$b.Method.GetName}}V{{$b.Index}}Handler,
+			},
+			{{end}}
+			{{end}}
+		}...
 	)
+}
 `
 )
 
@@ -39,9 +50,24 @@ var mapping = map[string]string{
 	"patch":  "http.MethodPatch",
 }
 
-func (g *GatewayGenerator) genRoute(dir string) error {
-	// TODO methodName
-	// methodName := "methodName"
+func getHttpMethod(method string) string {
+	return mapping[strings.ToLower(method)]
+}
+
+func replacePath(path string) string {
+	var builder strings.Builder
+	for _, r := range path {
+		if r == '}' {
+			continue
+		} else if r == '{' {
+			r = ':'
+		}
+		builder.WriteRune(r)
+	}
+	return builder.String()
+}
+
+func (g *GatewayGenerator) genRoutes(dir, pbImportPath string, meths []*descriptor.MethodWithBindings) error {
 	fp, created, err := util.MaybeCreateFile(dir, handlerDir, routesFilename)
 	if err != nil {
 		return err
@@ -51,21 +77,49 @@ func (g *GatewayGenerator) genRoute(dir string) error {
 	}
 	defer fp.Close()
 
-	// parentPkg, err := getParentPackage(dir)
-	// if err != nil {
-	// 	return err
-	// }
+	parentPkg, err := getParentPackage(dir)
+	if err != nil {
+		return err
+	}
+	// routesStr:="[]rest.Route{}"
+	// for _, meth := range meths {
 
-	text, err := ctlutil.LoadTemplate(category, handlerTemplateFile, handlerTemplate)
+	// }
+	funcMap := template.FuncMap{
+		// The name "title" is what the function will be called in the template text.
+		"getHttpMethod": getHttpMethod,
+		"replacePath":   replacePath,
+	}
+
+	text, err := ctlutil.LoadTemplate(category, routesTemplateFile, routesTemplate)
 	if err != nil {
 		return err
 	}
 
 	buffer := new(bytes.Buffer)
-	err = template.Must(template.New("handlerTemplate").Parse(text)).Execute(buffer,
-		map[string]string{})
+	err = template.Must(template.New("routesTemplate").Funcs(funcMap).Parse(text)).Execute(buffer,
+		map[string]interface{}{
+			"ImportPackages": genRoutesImports(parentPkg, pbImportPath),
+			"Meths":          meths,
+		})
+	if err != nil {
+		return err
+	}
+
+	formatCode := formatCode(buffer.String())
+	_, err = fp.WriteString(formatCode)
 	if err != nil {
 		return err
 	}
 	return nil
+}
+
+func genRoutesImports(parentPkg, pbImportPath string) string {
+	var imports []string
+	imports = append(imports, `"context"`+"\n")
+	imports = append(imports, fmt.Sprintf("\"%s\"", ctlutil.JoinPackages(parentPkg, contextDir)))
+	imports = append(imports, fmt.Sprintf("\"%s\"\n", pbImportPath))
+
+	imports = append(imports, fmt.Sprintf("\"%s/core/logx\"", vars.ProjectOpenSourceUrl))
+	return strings.Join(imports, "\n\t")
 }

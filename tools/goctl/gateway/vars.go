@@ -16,8 +16,9 @@ const (
 	configTemplateFile  = "config.tpl"
 	contextTemplateFile = "context.tpl"
 	etcTemplateFile     = "etc.tpl"
-	handlerTemplateFile = "handler.tpl"
-	logicTemplateFile   = "logic.tpl"
+	handlerTemplateFile = "handler.gw.tpl"
+	logicTemplateFile   = "logic.gw.tpl"
+	routesTemplateFile  = "routes.gw.tpl"
 	mainTemplateFile    = "main.tpl"
 	internal            = "internal"
 )

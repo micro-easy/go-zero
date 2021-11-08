@@ -25,7 +25,7 @@ import (
 func {{.b.Method.GetName}}V{{.b.Index}}Handler(ctx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req {{.b.Method.GetInputType.GetFullyQualifiedName}}
-		if err := httpx.Parse(r, &req); err != nil {
+		if err := httpx.ParseBody(r, &req); err != nil {
 			httpx.Error(w, err)
 			return
 		}
@@ -46,34 +46,34 @@ func {{.b.Method.GetName}}V{{.b.Index}}Handler(ctx *svc.ServiceContext) http.Han
 	{{$binding := .b}}
 	{{range $param := .b.PathParams}}
 	{{$enum := $binding.LookupEnum $param}}
-	val, ok = context.Vars[{{$param | printf "%q"}}]
+	val, ok = httpx.GetPathParams(r)[{{$param | printf "%q"}}]
 	if !ok {
-		httpx.Error(w,errors.New("missing parameter %s", {{$param | printf "%q"}}))
+		httpx.Error(w,fmt.Errorf("missing parameter %s", {{$param | printf "%q"}}))
 		return  
 	}
 {{if $param.IsNestedProto3}}
 	err = runtime.PopulateFieldFromPath(&req, {{$param | printf "%q"}}, val)
 	if err != nil {
-		httpx.Error(w,errors.New("type mismatch, parameter: %s, error: %v", {{$param | printf "%q"}}, err))
+		httpx.Error(w,fmt.Errorf("type mismatch, parameter: %s, error: %v", {{$param | printf "%q"}}, err))
 		return 
 	}
 	{{if $enum}}
 		e{{if $param.IsRepeated}}s{{end}}, err = {{$param.ConvertFuncExpr}}(val{{if $param.IsRepeated}}, {{$binding.GetRepeatedPathParamSeparator | printf "%c" | printf "%q"}}{{end}}, {{$enum.GetFullyQualifiedName}}_value)
 		if err != nil {
-			httpx.Error(w,errors.New("could not parse path as enum value, parameter: %s, error: %v", {{$param | printf "%q"}}, err))
+			httpx.Error(w,fmt.Errorf("could not parse path as enum value, parameter: %s, error: %v", {{$param | printf "%q"}}, err))
 			return 
 		}
 	{{end}}
 {{else if $enum}}
 	e{{if $param.IsRepeated}}s{{end}}, err = {{$param.ConvertFuncExpr}}(val{{if $param.IsRepeated}}, {{$binding.GetRepeatedPathParamSeparator | printf "%c" | printf "%q"}}{{end}}, {{$enum.GetFullyQualifiedName}}_value)
 	if err != nil {
-		httpx.Error(w,errors.New("type mismatch, parameter: %s, error: %v", {{$param | printf "%q"}}, err))
+		httpx.Error(w,fmt.Errorf("type mismatch, parameter: %s, error: %v", {{$param | printf "%q"}}, err))
 		return 
 	}
 {{else}}
 	{{$param.AssignableExpr "req"}}, err = {{$param.ConvertFuncExpr}}(val{{if $param.IsRepeated}}, {{$binding.GetRepeatedPathParamSeparator | printf "%c" | printf "%q"}}{{end}})
 	if err != nil {
-		httpx.Error(w,errors.New("type mismatch, parameter: %s, error: %v", {{$param | printf "%q"}}, err))
+		httpx.Error(w,fmt.Errorf("type mismatch, parameter: %s, error: %v", {{$param | printf "%q"}}, err))
 		return 
 	}
 {{end}}
@@ -102,6 +102,7 @@ func {{.b.Method.GetName}}V{{.b.Index}}Handler(ctx *svc.ServiceContext) http.Han
 
 func (g *GatewayGenerator) genHandler(dir, pbImportPath string, meth *descriptor.MethodWithBindings) error {
 	for _, binding := range meth.Bindings {
+		// binding.PathParams.
 		methodName := meth.GetName()
 		fp, created, err := util.MaybeCreateFile(dir, handlerDir, methodName+"_handler.go")
 		if err != nil {
@@ -117,7 +118,7 @@ func (g *GatewayGenerator) genHandler(dir, pbImportPath string, meth *descriptor
 			return err
 		}
 
-		text, err := ctlutil.LoadTemplate(category, handlerTemplateFile+"notmatch", handlerTemplate)
+		text, err := ctlutil.LoadTemplate(category, handlerTemplateFile, handlerTemplate)
 		if err != nil {
 			return err
 		}

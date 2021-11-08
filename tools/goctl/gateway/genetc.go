@@ -18,9 +18,7 @@ Port: {{.port}}
 `
 )
 
-func (g *GatewayGenerator) genEtc(dir string) error {
-	// TODO service name
-	serviceName := "todoserviceName"
+func (g *GatewayGenerator) genEtc(dir, serviceName string) error {
 	fp, created, err := apiutil.MaybeCreateFile(dir, etcDir, fmt.Sprintf("%s.yaml", serviceName))
 	if err != nil {
 		return err

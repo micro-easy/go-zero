@@ -25,6 +25,18 @@ var (
 	pathUnmarshaler = mapping.NewUnmarshaler(pathKey, mapping.WithStringValues())
 )
 
+func GetPathParams(r *http.Request) map[string]string {
+	return context.Vars(r)
+}
+
+func ParseBody(r *http.Request, v interface{}) error {
+	if err := ParseForm(r, v); err != nil {
+		return err
+	}
+
+	return ParseJsonBody(r, v)
+}
+
 func Parse(r *http.Request, v interface{}) error {
 	if err := ParsePath(r, v); err != nil {
 		return err
