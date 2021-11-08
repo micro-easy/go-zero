@@ -81,12 +81,8 @@ func (g *GatewayGenerator) genRoutes(dir, pbImportPath string, meths []*descript
 	if err != nil {
 		return err
 	}
-	// routesStr:="[]rest.Route{}"
-	// for _, meth := range meths {
 
-	// }
 	funcMap := template.FuncMap{
-		// The name "title" is what the function will be called in the template text.
 		"getHttpMethod": getHttpMethod,
 		"replacePath":   replacePath,
 	}

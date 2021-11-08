@@ -226,8 +226,6 @@ func newMethod(md *desc.MethodDescriptor, optsList []*options.HttpRule) (*Method
 			b.PathParams = append(b.PathParams, param)
 		}
 
-		// TODO(yugui) Handle query params
-
 		b.Body, err = newBody(md, opts.Body)
 		if err != nil {
 			return nil, err
