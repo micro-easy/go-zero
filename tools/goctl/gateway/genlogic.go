@@ -15,7 +15,7 @@ import (
 const logicTemplate = `package logic
 
 import (
-	{{.imports}}
+	{{.ImportPackages}}
 )
 
 type {{.b.Method.GetName}}Logic struct {
@@ -32,7 +32,7 @@ func New{{.b.Method.GetName}}Logic (ctx context.Context, svcCtx *svc.ServiceCont
 	}
 }
 
-func (l *{{.b.Method.GetName}}Logic) {{.b.Method.GetName}}({{req .b.Method.GetInputType.GetFullyQualifiedName}}) ({{.b.Method.GetOutputType.GetFullyQualifiedName}},error) {
+func (l *{{.b.Method.GetName}}Logic) {{.b.Method.GetName}}(req {{.b.Method.GetInputType.GetFullyQualifiedName}}) ({{.b.Method.GetOutputType.GetFullyQualifiedName}},error) {
 	// todo: add your logic here and delete this line
 	resp,err:=l.svcCtx.{{.b.Method.GetService.GetName}}.{{.b.Method.GetName}}(l.ctx,req)
 	if err!=nil{

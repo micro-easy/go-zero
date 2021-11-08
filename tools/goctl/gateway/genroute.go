@@ -20,21 +20,21 @@ package handler
 import (
 	"net/http"
 
-	{{.importPackages}}
+	{{.ImportPackages}}
 )
 
 func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 	engine.AddRoutes(
 		[]rest.Route{
-			{{range $meth := .Meths}}
-			{{range $b := $meth.Bindings}}
+			{{- range $meth := .Meths}}
+			{{- range $b := $meth.Bindings}}
 			{
-				Method: {{gethttpmethod $b.HTTPMethod}},
+				Method: {{getHttpMethod $b.HTTPMethod}},
 				Path:{{replacePath $b.PathTmpl.Template}},
 				Handler:{{$b.Method.GetName}}V{{$b.Index}}Handler,
 			},
-			{{end}}
-			{{end}}
+			{{end -}}
+			{{end -}}
 		}...
 	)
 }
