@@ -18,6 +18,8 @@ import (
 	"net/http"
 
 	{{.ImportPackages}}
+	{{if .b.PathParams}}"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"{{end}}
+
 )
 
 func {{.b.Method.GetName}}V{{.b.Index}}Handler(ctx *svc.ServiceContext) http.HandlerFunc {
@@ -46,32 +48,32 @@ func {{.b.Method.GetName}}V{{.b.Index}}Handler(ctx *svc.ServiceContext) http.Han
 	{{$enum := $binding.LookupEnum $param}}
 	val, ok = context.Vars[{{$param | printf "%q"}}]
 	if !ok {
-		httpx.Error(w,fmt.Errorf("missing parameter %s", {{$param | printf "%q"}}))
+		httpx.Error(w,errors.New("missing parameter %s", {{$param | printf "%q"}}))
 		return  
 	}
 {{if $param.IsNestedProto3}}
 	err = runtime.PopulateFieldFromPath(&req, {{$param | printf "%q"}}, val)
 	if err != nil {
-		httpx.Error(w,fmt.Errorf("type mismatch, parameter: %s, error: %v", {{$param | printf "%q"}}, err)
+		httpx.Error(w,errors.New("type mismatch, parameter: %s, error: %v", {{$param | printf "%q"}}, err))
 		return 
 	}
 	{{if $enum}}
 		e{{if $param.IsRepeated}}s{{end}}, err = {{$param.ConvertFuncExpr}}(val{{if $param.IsRepeated}}, {{$binding.GetRepeatedPathParamSeparator | printf "%c" | printf "%q"}}{{end}}, {{$enum.GetFullyQualifiedName}}_value)
 		if err != nil {
-			httpx.Error(w,fmt.Errorf( "could not parse path as enum value, parameter: %s, error: %v", {{$param | printf "%q"}}, err)
+			httpx.Error(w,errors.New("could not parse path as enum value, parameter: %s, error: %v", {{$param | printf "%q"}}, err))
 			return 
 		}
 	{{end}}
 {{else if $enum}}
 	e{{if $param.IsRepeated}}s{{end}}, err = {{$param.ConvertFuncExpr}}(val{{if $param.IsRepeated}}, {{$binding.GetRepeatedPathParamSeparator | printf "%c" | printf "%q"}}{{end}}, {{$enum.GetFullyQualifiedName}}_value)
 	if err != nil {
-		httpx.Error("type mismatch, parameter: %s, error: %v", {{$param | printf "%q"}}, err)
+		httpx.Error(w,errors.New("type mismatch, parameter: %s, error: %v", {{$param | printf "%q"}}, err))
 		return 
 	}
 {{else}}
 	{{$param.AssignableExpr "req"}}, err = {{$param.ConvertFuncExpr}}(val{{if $param.IsRepeated}}, {{$binding.GetRepeatedPathParamSeparator | printf "%c" | printf "%q"}}{{end}})
 	if err != nil {
-		httpx.Error("type mismatch, parameter: %s, error: %v", {{$param | printf "%q"}}, err)
+		httpx.Error(w,errors.New("type mismatch, parameter: %s, error: %v", {{$param | printf "%q"}}, err))
 		return 
 	}
 {{end}}
