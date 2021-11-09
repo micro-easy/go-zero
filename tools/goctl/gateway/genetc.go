@@ -3,6 +3,7 @@ package gateway
 import (
 	"bytes"
 	"fmt"
+	"strings"
 	"text/template"
 
 	apiutil "github.com/micro-easy/go-zero/tools/goctl/api/util"
@@ -14,7 +15,7 @@ const (
 	etcTemplate = `Name: {{.ServiceName}}api
 Host: 0.0.0.0
 Port: 8000
-{{.ServiceName}}:
+{{title .ServiceName}}:
   Etcd:
     Hosts:
       - 127.0.0.1:2379
@@ -37,7 +38,11 @@ func (g *GatewayGenerator) genEtc(dir, serviceName string) error {
 		return err
 	}
 
-	t := template.Must(template.New("etcTemplate").Parse(text))
+	funcMap := template.FuncMap{
+		"title": strings.Title,
+	}
+
+	t := template.Must(template.New("etcTemplate").Funcs(funcMap).Parse(text))
 	buffer := new(bytes.Buffer)
 	err = t.Execute(buffer, map[string]string{
 		"ServiceName": serviceName,
