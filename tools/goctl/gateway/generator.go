@@ -73,7 +73,7 @@ func (g *GatewayGenerator) Generate(src, target, pbPath, pbClientPath string) er
 		return err
 	}
 
-	err = g.genSvc(abs)
+	err = g.genSvc(abs, serviceName, pbClientPath)
 	if err != nil {
 		return err
 	}

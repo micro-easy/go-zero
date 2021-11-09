@@ -2,6 +2,8 @@ package gateway
 
 import (
 	"bytes"
+	"fmt"
+	"strings"
 	"text/template"
 
 	"github.com/micro-easy/go-zero/tools/goctl/api/util"
@@ -13,25 +15,25 @@ const (
 	contextTemplate = `package svc
 
 import (
-	{{.configImport}}
+	{{.ImportPackages}}
 )
 
 type ServiceContext struct {
-	Config {{.config}}
-	{{.middleware}}
+	Config config.Config
+	{{.ServiceName}} {{.PbClientPkg}}.{{.ServiceName}}
 }
 
-func NewServiceContext(c {{.config}}) *ServiceContext {
+func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
 		Config: c, 
-		{{.middlewareAssignment}}
+		{{.ServiceName}}: {{.PbClientPkg}}.New{{.ServiceName}}(c.{{.ServiceName}}),
 	}
 }
 
 `
 )
 
-func (g *GatewayGenerator) genSvc(dir string) error {
+func (g *GatewayGenerator) genSvc(dir, serviceName, pbClientPath string) error {
 	fp, created, err := util.MaybeCreateFile(dir, contextDir, contextFilename)
 	if err != nil {
 		return err
@@ -51,13 +53,12 @@ func (g *GatewayGenerator) genSvc(dir string) error {
 		return err
 	}
 
-	var configImport = "\"" + ctlutil.JoinPackages(parentPkg, configDir) + "\""
-
 	t := template.Must(template.New("contextTemplate").Parse(text))
 	buffer := new(bytes.Buffer)
 	err = t.Execute(buffer, map[string]string{
-		"configImport": configImport,
-		"config":       "config.Config",
+		"ImportPackages": genSvcImports(parentPkg, pbClientPath),
+		"ServiceName":    strings.Title(serviceName),
+		"PbClientPkg":    pbClientPath[strings.LastIndex(pbClientPath, "/")+1:],
 	})
 	if err != nil {
 		return err
@@ -66,4 +67,11 @@ func (g *GatewayGenerator) genSvc(dir string) error {
 	formatCode := formatCode(buffer.String())
 	_, err = fp.WriteString(formatCode)
 	return err
+}
+
+func genSvcImports(parentPkg, pbClientPath string) string {
+	var imports []string
+	imports = append(imports, fmt.Sprintf("\"%s\"", ctlutil.JoinPackages(parentPkg, configDir)))
+	imports = append(imports, fmt.Sprintf("\"%s\"", pbClientPath))
+	return strings.Join(imports, "\n\t")
 }
