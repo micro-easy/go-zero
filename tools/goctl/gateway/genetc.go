@@ -3,7 +3,6 @@ package gateway
 import (
 	"bytes"
 	"fmt"
-	"strconv"
 	"text/template"
 
 	apiutil "github.com/micro-easy/go-zero/tools/goctl/api/util"
@@ -12,14 +11,19 @@ import (
 
 const (
 	etcDir      = "etc"
-	etcTemplate = `Name: {{.serviceName}}
-Host: {{.host}}
-Port: {{.port}}
+	etcTemplate = `Name: {{.ServiceName}}api
+Host: 0.0.0.0
+Port: 8000
+{{.ServiceName}}:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: {{.ServiceName}}rpc
 `
 )
 
 func (g *GatewayGenerator) genEtc(dir, serviceName string) error {
-	fp, created, err := apiutil.MaybeCreateFile(dir, etcDir, fmt.Sprintf("%s.yaml", serviceName))
+	fp, created, err := apiutil.MaybeCreateFile(dir, etcDir, fmt.Sprintf("%sapi.yaml", serviceName))
 	if err != nil {
 		return err
 	}
@@ -27,9 +31,6 @@ func (g *GatewayGenerator) genEtc(dir, serviceName string) error {
 		return nil
 	}
 	defer fp.Close()
-
-	host := "0.0.0.0"
-	port := strconv.Itoa(defaultPort)
 
 	text, err := ctlutil.LoadTemplate("api", etcTemplateFile, etcTemplate)
 	if err != nil {
@@ -39,9 +40,7 @@ func (g *GatewayGenerator) genEtc(dir, serviceName string) error {
 	t := template.Must(template.New("etcTemplate").Parse(text))
 	buffer := new(bytes.Buffer)
 	err = t.Execute(buffer, map[string]string{
-		"serviceName": serviceName,
-		"host":        host,
-		"port":        port,
+		"ServiceName": serviceName,
 	})
 	if err != nil {
 		return err
