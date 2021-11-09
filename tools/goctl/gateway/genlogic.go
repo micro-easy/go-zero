@@ -32,7 +32,7 @@ func New{{.Method.GetName}}ApiLogic (ctx context.Context, svcCtx *svc.ServiceCon
 	}
 }
 
-func (l *{{.Method.GetName}}ApiLogic) {{.Method.GetName}}(req {{.Method.GetInputType.GetFullyQualifiedName}}) ({{.Method.GetOutputType.GetFullyQualifiedName}},error) {
+func (l *{{.Method.GetName}}ApiLogic) {{.Method.GetName}}Api(req *{{.Method.GetInputType.GetFullyQualifiedName}}) (*{{.Method.GetOutputType.GetFullyQualifiedName}},error) {
 	// todo: add your logic here and delete this line
 	resp,err:=l.svcCtx.{{.Method.GetService.GetName}}.{{.Method.GetName}}(l.ctx,req)
 	if err!=nil{
