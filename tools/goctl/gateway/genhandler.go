@@ -19,6 +19,7 @@ import (
 
 	{{.ImportPackages}}
 	{{if .b.PathParams}}"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"{{end}}
+	{{if .b.PathParams}}"fmt"{{end}}
 
 )
 
