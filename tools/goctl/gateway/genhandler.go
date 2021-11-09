@@ -90,7 +90,7 @@ func {{.b.Method.GetName}}V{{.b.Index}}Handler(ctx *svc.ServiceContext) http.Han
 {{end}}
 
 		l := logic.New{{.b.Method.GetName}}ApiLogic(r.Context(), ctx)
-		resp, err := l.{{.b.Method.GetName}}Api(req)
+		resp, err := l.{{.b.Method.GetName}}Api(&req)
 		if err != nil {
 			httpx.Error(w, err)
 		} else {

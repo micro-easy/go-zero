@@ -9,7 +9,6 @@ import (
 	"github.com/micro-easy/go-zero/tools/goctl/api/util"
 	"github.com/micro-easy/go-zero/tools/goctl/gateway/descriptor"
 	ctlutil "github.com/micro-easy/go-zero/tools/goctl/util"
-	"github.com/micro-easy/go-zero/tools/goctl/vars"
 )
 
 const (
@@ -19,6 +18,7 @@ package handler
 
 import (
 	"net/http"
+	"github.com/micro-easy/go-zero/rest"
 
 	{{.ImportPackages}}
 )
@@ -30,8 +30,8 @@ func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 			{{- range $b := $meth.Bindings}}
 			{
 				Method: {{getHttpMethod $b.HTTPMethod}},
-				Path:{{replacePath $b.PathTmpl.Template}},
-				Handler:{{$b.Method.GetName}}V{{$b.Index}}Handler,
+				Path:{{replacePath $b.PathTmpl.Template | printf "%q"}},
+				Handler:{{$b.Method.GetName}}V{{$b.Index}}Handler(serverCtx),
 			},
 			{{end -}}
 			{{end -}}
@@ -112,10 +112,10 @@ func (g *GatewayGenerator) genRoutes(dir, pbImportPath string, meths []*descript
 
 func genRoutesImports(parentPkg, pbImportPath string) string {
 	var imports []string
-	imports = append(imports, `"context"`+"\n")
+	//	imports = append(imports, `"context"`+"\n")
 	imports = append(imports, fmt.Sprintf("\"%s\"", ctlutil.JoinPackages(parentPkg, contextDir)))
-	imports = append(imports, fmt.Sprintf("\"%s\"\n", pbImportPath))
+	//	imports = append(imports, fmt.Sprintf("\"%s\"\n", pbImportPath))
 
-	imports = append(imports, fmt.Sprintf("\"%s/core/logx\"", vars.ProjectOpenSourceUrl))
+	//	imports = append(imports, fmt.Sprintf("\"%s/core/logx\"", vars.ProjectOpenSourceUrl))
 	return strings.Join(imports, "\n\t")
 }
