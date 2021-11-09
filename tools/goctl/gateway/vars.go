@@ -13,12 +13,12 @@ const (
 	defaultPort   = 8888
 
 	category            = "api"
-	configTemplateFile  = "config.tpl"
-	contextTemplateFile = "context.tpl"
-	etcTemplateFile     = "etc.tpl"
+	configTemplateFile  = "config.gw.tpl"
+	contextTemplateFile = "context.gw.tpl"
+	etcTemplateFile     = "etc.gw.tpl"
 	handlerTemplateFile = "handler.gw.tpl"
 	logicTemplateFile   = "logic.gw.tpl"
 	routesTemplateFile  = "routes.gw.tpl"
-	mainTemplateFile    = "main.tpl"
+	mainTemplateFile    = "main.gw.tpl"
 	internal            = "internal"
 )
