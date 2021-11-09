@@ -25,7 +25,7 @@ func NewGatewayGenerator() *GatewayGenerator {
 	return &GatewayGenerator{}
 }
 
-func (g *GatewayGenerator) Generate(src, target, pbImportPath string) error {
+func (g *GatewayGenerator) Generate(src, target, pbPath, pbClientPath string) error {
 	abs, err := filepath.Abs(target)
 	if err != nil {
 		return err
@@ -84,16 +84,16 @@ func (g *GatewayGenerator) Generate(src, target, pbImportPath string) error {
 	}
 
 	for _, meth := range methods {
-		if err := g.genHandler(abs, pbImportPath, meth); err != nil {
+		if err := g.genHandler(abs, pbPath, meth); err != nil {
 			return err
 		}
 
-		if err := g.genLogic(abs, pbImportPath, meth); err != nil {
+		if err := g.genLogic(abs, pbPath, meth); err != nil {
 			return err
 		}
 	}
 
-	if err := g.genRoutes(abs, pbImportPath, methods); err != nil {
+	if err := g.genRoutes(abs, pbPath, methods); err != nil {
 		return err
 	}
 

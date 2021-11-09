@@ -207,8 +207,12 @@ var (
 					Usage: "the proto file",
 				},
 				cli.StringFlag{
-					Name:  "importpath",
+					Name:  "pbpath",
 					Usage: "the pb file import path",
+				},
+				cli.StringFlag{
+					Name:  "pbclientpath",
+					Usage: "the pb client file import path",
 				},
 			},
 			Action: gateway.Gateway,
