@@ -12,13 +12,19 @@ const (
 	configFile     = "config.go"
 	configTemplate = `package config
 
+	import (
+		"github.com/micro-easy/go-zero/rest"
+		"github.com/micro-easy/go-zero/zrpc"
+	)
+
 type Config struct {
 	rest.RestConf
+	{{.ServiceName}}  zrpc.RpcClientConf
 }
 `
 )
 
-func (g *GatewayGenerator) genConfig(dir string) error {
+func (g *GatewayGenerator) genConfig(dir, serviceName string) error {
 	fp, created, err := apiutil.MaybeCreateFile(dir, configDir, configFile)
 	if err != nil {
 		return err
@@ -35,7 +41,9 @@ func (g *GatewayGenerator) genConfig(dir string) error {
 
 	t := template.Must(template.New("configTemplate").Parse(text))
 	buffer := new(bytes.Buffer)
-	err = t.Execute(buffer, map[string]string{})
+	err = t.Execute(buffer, map[string]string{
+		"ServiceName": serviceName,
+	})
 	if err != nil {
 		return err
 	}

@@ -68,7 +68,7 @@ func (g *GatewayGenerator) Generate(src, target, pbPath, pbClientPath string) er
 		return err
 	}
 
-	err = g.genConfig(abs)
+	err = g.genConfig(abs, serviceName)
 	if err != nil {
 		return err
 	}
