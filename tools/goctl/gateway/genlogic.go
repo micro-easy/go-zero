@@ -18,23 +18,23 @@ import (
 	{{.ImportPackages}}
 )
 
-type {{.b.Method.GetName}}Logic struct {
+type {{.Method.GetName}}ApiLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func New{{.b.Method.GetName}}Logic (ctx context.Context, svcCtx *svc.ServiceContext) {{.b.Method.GetName}}Logic {
-	return {{.b.Method.GetName}}{
+func New{{.Method.GetName}}ApiLogic (ctx context.Context, svcCtx *svc.ServiceContext) {{.Method.GetName}}ApiLogic {
+	return {{.Method.GetName}}ApiLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *{{.b.Method.GetName}}Logic) {{.b.Method.GetName}}(req {{.b.Method.GetInputType.GetFullyQualifiedName}}) ({{.b.Method.GetOutputType.GetFullyQualifiedName}},error) {
+func (l *{{.Method.GetName}}ApiLogic) {{.Method.GetName}}(req {{.Method.GetInputType.GetFullyQualifiedName}}) ({{.Method.GetOutputType.GetFullyQualifiedName}},error) {
 	// todo: add your logic here and delete this line
-	resp,err:=l.svcCtx.{{.b.Method.GetService.GetName}}.{{.b.Method.GetName}}(l.ctx,req)
+	resp,err:=l.svcCtx.{{.Method.GetService.GetName}}.{{.Method.GetName}}(l.ctx,req)
 	if err!=nil{
 		return nil,err
 	}
@@ -43,42 +43,40 @@ func (l *{{.b.Method.GetName}}Logic) {{.b.Method.GetName}}(req {{.b.Method.GetIn
 `
 
 func (g *GatewayGenerator) genLogic(dir, pbImportPath string, meth *descriptor.MethodWithBindings) error {
-	for _, binding := range meth.Bindings {
-		methodName := meth.GetName()
-		fp, created, err := util.MaybeCreateFile(dir, logicDir, methodName+"_logic.go")
-		if err != nil {
-			return err
-		}
-		if !created {
-			return nil
-		}
-		defer fp.Close()
+	methodName := meth.GetName()
+	fp, created, err := util.MaybeCreateFile(dir, logicDir, methodName+"_logic.go")
+	if err != nil {
+		return err
+	}
+	if !created {
+		return nil
+	}
+	defer fp.Close()
 
-		parentPkg, err := getParentPackage(dir)
-		if err != nil {
-			return err
-		}
+	parentPkg, err := getParentPackage(dir)
+	if err != nil {
+		return err
+	}
 
-		text, err := ctlutil.LoadTemplate(category, logicTemplateFile, logicTemplate)
-		if err != nil {
-			return err
-		}
+	text, err := ctlutil.LoadTemplate(category, logicTemplateFile, logicTemplate)
+	if err != nil {
+		return err
+	}
 
-		buffer := new(bytes.Buffer)
-		err = template.Must(template.New("logicTemplate").Parse(text)).Execute(buffer,
-			map[string]interface{}{
-				"ImportPackages": genLogicImports(parentPkg, pbImportPath),
-				"b":              binding,
-			})
-		if err != nil {
-			return err
-		}
+	buffer := new(bytes.Buffer)
+	err = template.Must(template.New("logicTemplate").Parse(text)).Execute(buffer,
+		map[string]interface{}{
+			"ImportPackages": genLogicImports(parentPkg, pbImportPath),
+			"Method":         meth,
+		})
+	if err != nil {
+		return err
+	}
 
-		formatCode := formatCode(buffer.String())
-		_, err = fp.WriteString(formatCode)
-		if err != nil {
-			return err
-		}
+	formatCode := formatCode(buffer.String())
+	_, err = fp.WriteString(formatCode)
+	if err != nil {
+		return err
 	}
 
 	return nil

@@ -101,9 +101,9 @@ func {{.b.Method.GetName}}V{{.b.Index}}Handler(ctx *svc.ServiceContext) http.Han
 `
 
 func (g *GatewayGenerator) genHandler(dir, pbImportPath string, meth *descriptor.MethodWithBindings) error {
-	for _, binding := range meth.Bindings {
+	for i, binding := range meth.Bindings {
 		methodName := meth.GetName()
-		fp, created, err := util.MaybeCreateFile(dir, handlerDir, methodName+"_handler.go")
+		fp, created, err := util.MaybeCreateFile(dir, handlerDir, fmt.Sprintf("%sV%d_handler.go", methodName, i))
 		if err != nil {
 			return err
 		}
