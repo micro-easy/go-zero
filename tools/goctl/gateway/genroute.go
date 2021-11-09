@@ -35,7 +35,7 @@ func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{{end -}}
 			{{end -}}
-		}...
+		},
 	)
 }
 `

@@ -34,7 +34,7 @@ func New{{.Method.GetName}}ApiLogic (ctx context.Context, svcCtx *svc.ServiceCon
 
 func (l *{{.Method.GetName}}ApiLogic) {{.Method.GetName}}Api(req *{{.Method.GetInputType.GetFullyQualifiedName}}) (*{{.Method.GetOutputType.GetFullyQualifiedName}},error) {
 	// todo: add your logic here and delete this line
-	resp,err:=l.svcCtx.{{.Method.GetService.GetName}}.{{.Method.GetName}}(l.ctx,req)
+	resp,err:=l.svcCtx.{{title .Method.GetService.GetName}}.{{.Method.GetName}}(l.ctx,req)
 	if err!=nil{
 		return nil,err
 	}
@@ -63,8 +63,12 @@ func (g *GatewayGenerator) genLogic(dir, pbImportPath string, meth *descriptor.M
 		return err
 	}
 
+	funcMap := template.FuncMap{
+		"title": strings.Title,
+	}
+
 	buffer := new(bytes.Buffer)
-	err = template.Must(template.New("logicTemplate").Parse(text)).Execute(buffer,
+	err = template.Must(template.New("logicTemplate").Funcs(funcMap).Parse(text)).Execute(buffer,
 		map[string]interface{}{
 			"ImportPackages": genLogicImports(parentPkg, pbImportPath),
 			"Method":         meth,

@@ -1,9 +1,5 @@
 package httprule
 
-import (
-	"github.com/grpc-ecosystem/grpc-gateway/v2/utilities"
-)
-
 const (
 	opcodeVersion = 1
 )
@@ -32,7 +28,7 @@ type Compiler interface {
 
 type op struct {
 	// code is the opcode of the operation
-	code utilities.OpCode
+	code OpCode
 
 	// str is a string operand of the code.
 	// num is ignored if str is not empty.
@@ -44,20 +40,20 @@ type op struct {
 
 func (w wildcard) compile() []op {
 	return []op{
-		{code: utilities.OpPush},
+		{code: OpPush},
 	}
 }
 
 func (w deepWildcard) compile() []op {
 	return []op{
-		{code: utilities.OpPushM},
+		{code: OpPushM},
 	}
 }
 
 func (l literal) compile() []op {
 	return []op{
 		{
-			code: utilities.OpLitPush,
+			code: OpLitPush,
 			str:  string(l),
 		},
 	}
@@ -69,10 +65,10 @@ func (v variable) compile() []op {
 		ops = append(ops, s.compile()...)
 	}
 	ops = append(ops, op{
-		code: utilities.OpConcatN,
+		code: OpConcatN,
 		num:  len(v.segments),
 	}, op{
-		code: utilities.OpCapture,
+		code: OpCapture,
 		str:  v.path,
 	})
 
@@ -106,7 +102,7 @@ func (t template) Compile() Template {
 			}
 			ops = append(ops, consts[op.str])
 		}
-		if op.code == utilities.OpCapture {
+		if op.code == OpCapture {
 			fields = append(fields, op.str)
 		}
 	}

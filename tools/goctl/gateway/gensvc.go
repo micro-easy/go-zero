@@ -16,6 +16,7 @@ const (
 
 import (
 	{{.ImportPackages}}
+	"github.com/micro-easy/go-zero/zrpc"
 )
 
 type ServiceContext struct {
@@ -26,7 +27,7 @@ type ServiceContext struct {
 func NewServiceContext(c config.Config) *ServiceContext {
 	return &ServiceContext{
 		Config: c, 
-		{{.ServiceName}}: {{.PbClientPkg}}.New{{.ServiceName}}(c.{{.ServiceName}}),
+		{{.ServiceName}}: {{.PbClientPkg}}.New{{.ServiceName}}(zrpc.MustNewClient(c.{{.ServiceName}})),
 	}
 }
 
