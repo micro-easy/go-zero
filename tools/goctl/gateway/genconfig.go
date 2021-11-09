@@ -2,6 +2,7 @@ package gateway
 
 import (
 	"bytes"
+	"strings"
 	"text/template"
 
 	apiutil "github.com/micro-easy/go-zero/tools/goctl/api/util"
@@ -42,7 +43,7 @@ func (g *GatewayGenerator) genConfig(dir, serviceName string) error {
 	t := template.Must(template.New("configTemplate").Parse(text))
 	buffer := new(bytes.Buffer)
 	err = t.Execute(buffer, map[string]string{
-		"ServiceName": serviceName,
+		"ServiceName": strings.Title(serviceName),
 	})
 	if err != nil {
 		return err
