@@ -68,12 +68,9 @@ func replacePath(path string) string {
 }
 
 func (g *GatewayGenerator) genRoutes(dir, pbImportPath string, meths []*descriptor.MethodWithBindings) error {
-	fp, created, err := util.MaybeCreateFile(dir, handlerDir, routesFilename)
+	fp, err := util.CreateOrOpenCleanFile(dir, handlerDir, routesFilename)
 	if err != nil {
 		return err
-	}
-	if !created {
-		return nil
 	}
 	defer fp.Close()
 

@@ -36,6 +36,16 @@ func (g *GatewayGenerator) Generate(src, target, pbPath, pbClientPath string) er
 		return err
 	}
 
+	pbImportPath, err := getParentPackage(pbPath)
+	if err != nil {
+		return err
+	}
+
+	pbClientImportPath, err := getParentPackage(pbClientPath)
+	if err != nil {
+		return err
+	}
+
 	err = g.Prepare()
 	if err != nil {
 		return err
@@ -73,7 +83,7 @@ func (g *GatewayGenerator) Generate(src, target, pbPath, pbClientPath string) er
 		return err
 	}
 
-	err = g.genSvc(abs, serviceName, pbClientPath)
+	err = g.genSvc(abs, serviceName, pbClientImportPath)
 	if err != nil {
 		return err
 	}
@@ -84,16 +94,16 @@ func (g *GatewayGenerator) Generate(src, target, pbPath, pbClientPath string) er
 	}
 
 	for _, meth := range methods {
-		if err := g.genHandler(abs, pbPath, meth); err != nil {
+		if err := g.genHandler(abs, pbImportPath, meth); err != nil {
 			return err
 		}
 
-		if err := g.genLogic(abs, pbPath, meth); err != nil {
+		if err := g.genLogic(abs, pbImportPath, meth); err != nil {
 			return err
 		}
 	}
 
-	if err := g.genRoutes(abs, pbPath, methods); err != nil {
+	if err := g.genRoutes(abs, pbImportPath, methods); err != nil {
 		return err
 	}
 

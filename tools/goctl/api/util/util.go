@@ -26,6 +26,15 @@ func MaybeCreateFile(dir, subdir, file string) (fp *os.File, created bool, err e
 	return
 }
 
+func CreateOrOpenCleanFile(dir, subdir, file string) (fp *os.File, err error) {
+	logx.Must(util.MkdirIfNotExist(path.Join(dir, subdir)))
+	fpath := path.Join(dir, subdir, file)
+	if util.FileExists(fpath) {
+		return ClearAndOpenFile(fpath)
+	}
+	return util.CreateIfNotExist(fpath)
+}
+
 func ClearAndOpenFile(fpath string) (*os.File, error) {
 	f, err := os.OpenFile(fpath, os.O_WRONLY|os.O_TRUNC, 0600)
 	if err != nil {
