@@ -12,6 +12,7 @@ func Gateway(c *cli.Context) error {
 	out := c.String("dir")
 	pbPath := c.String("pbpath")
 	pbClientPath := c.String("pbclientpath")
+	protoImportPath := c.StringSlice("proto_path")
 	if len(src) == 0 {
 		return errors.New("missing -proto")
 	}
@@ -26,5 +27,5 @@ func Gateway(c *cli.Context) error {
 		return errors.New("missing -pbclientpath")
 	}
 
-	return NewGatewayGenerator().Generate(src, out, pbPath, pbClientPath)
+	return NewGatewayGenerator().Generate(src, out, pbPath, pbClientPath, protoImportPath)
 }

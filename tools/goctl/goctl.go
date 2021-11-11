@@ -214,6 +214,10 @@ var (
 					Name:  "pbclientpath",
 					Usage: "the pb client file import path",
 				},
+				cli.StringSliceFlag{
+					Name:  "proto_path, I",
+					Usage: `native command of protoc, specify the directory in which to search for imports. [optional]`,
+				},
 			},
 			Action: gateway.Gateway,
 		},

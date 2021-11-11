@@ -25,7 +25,7 @@ func NewGatewayGenerator() *GatewayGenerator {
 	return &GatewayGenerator{}
 }
 
-func (g *GatewayGenerator) Generate(src, target, pbPath, pbClientPath string) error {
+func (g *GatewayGenerator) Generate(src, target, pbPath, pbClientPath string, protoImportPath []string) error {
 	abs, err := filepath.Abs(target)
 	if err != nil {
 		return err
@@ -56,8 +56,10 @@ func (g *GatewayGenerator) Generate(src, target, pbPath, pbClientPath string) er
 		return err
 	}
 
-	parser := &parse.Parser{}
-	fds, err := parser.ParseFiles(absSrc)
+	parser := &parse.Parser{
+		ImportPaths: append(protoImportPath, filepath.Dir(absSrc)),
+	}
+	fds, err := parser.ParseFiles(filepath.Base(absSrc))
 	if err != nil {
 		return err
 	}
