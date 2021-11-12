@@ -46,7 +46,7 @@ func (g *GatewayGenerator) genMain(dir, serviceName string) error {
 	if strings.HasSuffix(name, "-api") {
 		name = strings.ReplaceAll(name, "-api", "")
 	}
-	goFile := name + ".go"
+	goFile := name + "api.go"
 	fp, created, err := util.MaybeCreateFile(dir, "", goFile)
 	if err != nil {
 		return err
