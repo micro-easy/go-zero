@@ -19,7 +19,7 @@ var (
 		Subsystem: "requests",
 		Name:      "duration_ms",
 		Help:      "rpc client requests duration(ms).",
-		Labels:    []string{"method"},
+		Labels:    []string{"method", "invoker"},
 		Buckets:   []float64{5, 10, 25, 50, 100, 250, 500, 1000},
 	})
 
@@ -28,15 +28,17 @@ var (
 		Subsystem: "requests",
 		Name:      "code_total",
 		Help:      "rpc client requests code count.",
-		Labels:    []string{"method", "code"},
+		Labels:    []string{"method", "code", "invoker"},
 	})
 )
 
-func PrometheusInterceptor(ctx context.Context, method string, req, reply interface{},
-	cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
-	startTime := timex.Now()
-	err := invoker(ctx, method, req, reply, cc, opts...)
-	metricClientReqDur.Observe(int64(timex.Since(startTime)/time.Millisecond), method)
-	metricClientReqCodeTotal.Inc(method, strconv.Itoa(int(status.Code(err))))
-	return err
+func PrometheusInterceptor(invokerName string) grpc.UnaryClientInterceptor {
+	return func(ctx context.Context, method string, req, reply interface{}, cc *grpc.ClientConn,
+		invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
+		startTime := timex.Now()
+		err := invoker(ctx, method, req, reply, cc, opts...)
+		metricClientReqDur.Observe(int64(timex.Since(startTime)/time.Millisecond), method, invokerName)
+		metricClientReqCodeTotal.Inc(method, strconv.Itoa(int(status.Code(err))), invokerName)
+		return err
+	}
 }

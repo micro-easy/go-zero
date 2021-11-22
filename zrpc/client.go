@@ -13,6 +13,7 @@ import (
 var (
 	WithDialOption             = internal.WithDialOption
 	WithTimeout                = internal.WithTimeout
+	WithInvokerName            = internal.WithInvokerName
 	WithUnaryClientInterceptor = internal.WithUnaryClientInterceptor
 )
 
@@ -47,6 +48,9 @@ func NewClient(c RpcClientConf, options ...ClientOption) (Client, error) {
 	}
 	if c.Timeout > 0 {
 		opts = append(opts, WithTimeout(time.Duration(c.Timeout)*time.Millisecond))
+	}
+	if len(c.Invoker) > 0 {
+		opts = append(opts, WithInvokerName(c.Invoker))
 	}
 	opts = append(opts, options...)
 

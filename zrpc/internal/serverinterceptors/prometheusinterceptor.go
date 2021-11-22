@@ -19,7 +19,7 @@ var (
 		Subsystem: "requests",
 		Name:      "duration_ms",
 		Help:      "rpc server requests duration(ms).",
-		Labels:    []string{"method"},
+		Labels:    []string{"method", "service"},
 		Buckets:   []float64{5, 10, 25, 50, 100, 250, 500, 1000},
 	})
 
@@ -28,17 +28,17 @@ var (
 		Subsystem: "requests",
 		Name:      "code_total",
 		Help:      "rpc server requests code count.",
-		Labels:    []string{"method", "code"},
+		Labels:    []string{"method", "code", "service"},
 	})
 )
 
-func UnaryPrometheusInterceptor() grpc.UnaryServerInterceptor {
+func UnaryPrometheusInterceptor(serviceName string) grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (
 		interface{}, error) {
 		startTime := timex.Now()
 		resp, err := handler(ctx, req)
-		metricServerReqDur.Observe(int64(timex.Since(startTime)/time.Millisecond), info.FullMethod)
-		metricServerReqCodeTotal.Inc(info.FullMethod, strconv.Itoa(int(status.Code(err))))
+		metricServerReqDur.Observe(int64(timex.Since(startTime)/time.Millisecond), info.FullMethod, serviceName)
+		metricServerReqCodeTotal.Inc(info.FullMethod, strconv.Itoa(int(status.Code(err))), serviceName)
 		return resp, err
 	}
 }

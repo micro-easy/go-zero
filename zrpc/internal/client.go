@@ -25,6 +25,7 @@ func init() {
 type (
 	ClientOptions struct {
 		Timeout     time.Duration
+		Invoker     string
 		DialOptions []grpc.DialOption
 	}
 
@@ -62,7 +63,7 @@ func (c *client) buildDialOptions(opts ...ClientOption) []grpc.DialOption {
 			clientinterceptors.OpenTracingInterceptor,
 			clientinterceptors.DurationInterceptor,
 			clientinterceptors.BreakerInterceptor,
-			clientinterceptors.PrometheusInterceptor,
+			clientinterceptors.PrometheusInterceptor(cliOpts.Invoker),
 			clientinterceptors.TimeoutInterceptor(cliOpts.Timeout),
 		),
 	}
@@ -101,6 +102,12 @@ func WithDialOption(opt grpc.DialOption) ClientOption {
 func WithTimeout(timeout time.Duration) ClientOption {
 	return func(options *ClientOptions) {
 		options.Timeout = timeout
+	}
+}
+
+func WithInvokerName(invoker string) ClientOption {
+	return func(options *ClientOptions) {
+		options.Invoker = invoker
 	}
 }
 
