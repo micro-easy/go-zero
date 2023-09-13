@@ -39,13 +39,13 @@ func RegisterHandlers(engine *rest.Server, serverCtx *svc.ServiceContext) {
 )
 
 var mapping = map[string]string{
-	"delete": "http.MethodDelete",
-	"get":    "http.MethodGet",
-	"head":   "http.MethodHead",
-	"post":   "http.MethodPost",
-	"put":    "http.MethodPut",
-	"patch":  "http.MethodPatch",
-	"options":"http.MethodOptions",
+	"delete":  "http.MethodDelete",
+	"get":     "http.MethodGet",
+	"head":    "http.MethodHead",
+	"post":    "http.MethodPost",
+	"put":     "http.MethodPut",
+	"patch":   "http.MethodPatch",
+	"options": "http.MethodOptions",
 }
 
 type (
