@@ -45,6 +45,7 @@ var mapping = map[string]string{
 	"post":   "http.MethodPost",
 	"put":    "http.MethodPut",
 	"patch":  "http.MethodPatch",
+	"options":"http.MethodOptions",
 }
 
 type (
